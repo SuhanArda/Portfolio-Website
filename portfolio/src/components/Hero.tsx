@@ -35,7 +35,7 @@ export default function Hero() {
                             href="/cv.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 bg-[#ff3366] hover:bg-[#ff1a53] text-white px-6 py-3 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(255,51,102,0.3)] hover:shadow-[0_0_25px_rgba(255,51,102,0.6)]"
+                            className="flex items-center gap-2 border border-[#ff3366] text-[#ff3366] hover:bg-[#ff3366] hover:text-white px-6 py-3 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(255,51,102,0.3)] hover:shadow-[0_0_25px_rgba(255,51,102,0.6)]"
                         >
                             <FileText size={20} />
                             Download CV
