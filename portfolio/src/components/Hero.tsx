@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { FileText, ArrowRight, Github } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin } from "lucide-react";
 
 export default function Hero() {
     return (
@@ -55,6 +55,15 @@ export default function Hero() {
                         >
                             <Github size={20} />
                             GitHub
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/suhan-arda-%C3%B6ner-57826924b/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 border border-white/20 text-white hover:bg-[#0A66C2] border-transparent hover:border-[#0A66C2] px-6 py-3 rounded-full font-medium transition-all"
+                        >
+                            <Linkedin size={20} />
+                            LinkedIn
                         </a>
                     </div>
                 </motion.div>
