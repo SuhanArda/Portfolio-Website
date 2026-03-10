@@ -18,7 +18,7 @@ export default function Hero() {
                     </div>
                     <h1 className="text-5xl sm:text-6xl font-bold leading-tight">
                         I am{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff3366] to-[#00ccff]">
+                        <span className="inline-block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-[#ff3366] to-[#00ccff]">
                             Suhan Arda Öner.
                         </span>
                         <br /> A Computer & Mechatronics Engineer
