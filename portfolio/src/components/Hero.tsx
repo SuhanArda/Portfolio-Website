@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram } from "lucide-react";
 
 export default function Hero() {
     return (
@@ -64,6 +64,15 @@ export default function Hero() {
                         >
                             <Linkedin size={20} />
                             LinkedIn
+                        </a>
+                        <a
+                            href="https://www.instagram.com/suhanarda/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 border border-white/20 text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] border-transparent hover:border-transparent px-6 py-3 rounded-full font-medium transition-all"
+                        >
+                            <Instagram size={20} />
+                            Instagram
                         </a>
                     </div>
                 </motion.div>
