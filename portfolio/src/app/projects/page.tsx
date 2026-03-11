@@ -49,6 +49,13 @@ const detailedProjects = [
         techStack: ["C#", "Unity", "SenseGlove API"],
         description: "Developed an advanced haptic feedback controller application using Unity and the SenseGlove API. This project demonstrates expertise in integrating complex hardware interfaces with real-time simulation environments, enabling precise tactile feedback for virtual interactions.",
         githubUrl: "https://github.com/SuhanArda/SenseGlove-Cube-Triangle-Controller"
+    },
+    {
+        id: 7,
+        title: "Portfolio-Website",
+        techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+        description: "A modern, interactive portfolio website built with Next.js and Tailwind CSS. This project features a dynamic, AI-enhanced Matrix Rain background, a custom 3D-aware cursor, and a responsive, glassmorphic design system. It serves as a showcase of advanced frontend development techniques, including server-side rendering, client-side animations, and seamless integration with AI-generated visual effects.",
+        githubUrl: "https://github.com/SuhanArda/Portfolio-Website"
     }
 ];
 
