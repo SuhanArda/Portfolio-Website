@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ExternalLink, Code2, Github } from "lucide-react";
 
@@ -11,9 +10,16 @@ interface ProjectDetails {
     githubUrl?: string;
 }
 
-export default function DetailedProjectCard({ project }: { project: ProjectDetails }) {
+export default function DetailedProjectCard({
+    project,
+    isOpen,
+    onToggle
+}: {
+    project: ProjectDetails;
+    isOpen: boolean;
+    onToggle: () => void;
+}) {
     // ... preserving other parts ...
-    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <motion.div
@@ -26,7 +32,7 @@ export default function DetailedProjectCard({ project }: { project: ProjectDetai
                 transition-all duration-300 group
                 ${isOpen ? 'border-[#00ccff]/50 shadow-[0_0_30px_rgba(0,204,255,0.15)]' : 'hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]'}
             `}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={onToggle}
         >
             {/* Conditional Neon Glow that follows the theme (cyan/pink) when hovered or open */}
             <div className={`absolute -inset-[1px] bg-gradient-to-r from-[#00ccff] to-[#ff3366] rounded-2xl z-[-1] opacity-0 transition-opacity duration-500 blur-sm ${isOpen ? 'opacity-30' : 'group-hover:opacity-20'}`} />

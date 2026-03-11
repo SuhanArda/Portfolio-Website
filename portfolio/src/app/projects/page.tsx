@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import DetailedProjectCard from "@/components/DetailedProjectCard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -51,6 +53,12 @@ const detailedProjects = [
 ];
 
 export default function ProjectsPage() {
+    const [openProjectId, setOpenProjectId] = useState<number | null>(null);
+
+    const handleToggle = (id: number) => {
+        setOpenProjectId(prev => (prev === id ? null : id));
+    };
+
     return (
         <main className="min-h-screen pt-24 pb-20 px-6 sm:px-12 max-w-5xl mx-auto relative z-10 selection:bg-[#ff3366] selection:text-white">
             <CustomCursor />
@@ -73,7 +81,12 @@ export default function ProjectsPage() {
 
             <div className="space-y-6">
                 {detailedProjects.map((project) => (
-                    <DetailedProjectCard key={project.id} project={project} />
+                    <DetailedProjectCard
+                        key={project.id}
+                        project={project}
+                        isOpen={openProjectId === project.id}
+                        onToggle={() => handleToggle(project.id)}
+                    />
                 ))}
             </div>
 
