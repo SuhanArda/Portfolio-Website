@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { FileText, ArrowRight, Github, Linkedin, Instagram } from "lucide-react";
+import ProfileFlipCard from "./ProfileFlipCard";
 
 export default function Hero() {
     return (
@@ -84,38 +85,7 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="flex justify-center lg:justify-end"
                 >
-                    <div
-                        className="relative w-72 h-72 sm:w-96 sm:h-96 group"
-                        onMouseMove={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const x = e.clientX - rect.left - rect.width / 2;
-                            const y = e.clientY - rect.top - rect.height / 2;
-                            e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
-                            e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.setProperty('--mouse-x', `0px`);
-                            e.currentTarget.style.setProperty('--mouse-y', `0px`);
-                        }}
-                        style={{ '--mouse-x': '0px', '--mouse-y': '0px' } as React.CSSProperties}
-                    >
-                        {/* Glowing Background that follows mouse */}
-                        <motion.div
-                            className="absolute inset-0 bg-gradient-to-tr from-[#ff3366] to-[#00ccff] rounded-full blur-2xl opacity-40 transition-transform duration-200 ease-out"
-                            style={{
-                                transform: 'translate(calc(var(--mouse-x) * 0.2), calc(var(--mouse-y) * 0.2)) scale(1.1)',
-                            }}
-                        />
-
-                        <div className="w-full h-full duotone-container shadow-2xl relative z-10 transition-transform duration-300 ease-out group-hover:scale-[1.02]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/profile.jpeg"
-                                alt="Suhan Arda Öner"
-                                className="w-full h-full object-cover duotone-image"
-                            />
-                        </div>
-                    </div>
+                    <ProfileFlipCard />
                 </motion.div>
             </div>
         </section>
