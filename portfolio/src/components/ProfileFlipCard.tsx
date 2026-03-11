@@ -48,7 +48,7 @@ export default function ProfileFlipCard() {
                     className="absolute inset-0 w-full h-full rounded-full shadow-2xl overflow-hidden bg-[#0a0a0a] border-2 border-white/10 flex flex-col [backface-visibility:hidden] [transform:rotateY(180deg)]"
                 >
                     {/* Mac Buttons */}
-                    <div className="absolute top-8 left-12 flex items-center gap-2">
+                    <div className="absolute top-14 left-16 flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
                         <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
                         <div className="w-3 h-3 rounded-full bg-[#27c93f]"></div>
