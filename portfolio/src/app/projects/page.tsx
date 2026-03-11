@@ -40,6 +40,13 @@ const detailedProjects = [
         techStack: ["Java"],
         description: "Designed and implemented a suite of terminal-based Java applications focused on algorithmic efficiency and core computer science concepts. This suite serves as a sandbox for testing complex data manipulation, algorithmic problem-solving, and strict type safety within the Java ecosystem, showcasing a deep foundational knowledge of backend software development.",
         githubUrl: "https://github.com/SuhanArda/Java-Console-Application"
+    },
+    {
+        id: 6,
+        title: "SenseGlove-Cube-Triangle-Controller",
+        techStack: ["C#", "Unity", "SenseGlove API"],
+        description: "Developed an advanced haptic feedback controller application using Unity and the SenseGlove API. This project demonstrates expertise in integrating complex hardware interfaces with real-time simulation environments, enabling precise tactile feedback for virtual interactions.",
+        githubUrl: "https://github.com/SuhanArda/SenseGlove-Cube-Triangle-Controller"
     }
 ];
 
