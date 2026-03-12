@@ -4,11 +4,12 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { Engine } from "@tsparticles/engine";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function NetworkBackground() {
     const [init, setInit] = useState(false);
+    const { theme } = useTheme();
 
-    // Parallax delayed follow state
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
     const springConfig = { damping: 40, stiffness: 80, mass: 1 };
@@ -22,7 +23,6 @@ export default function NetworkBackground() {
             setInit(true);
         });
 
-        // Handle mouse movement for parallax background
         const handleMouseMove = (e: MouseEvent) => {
             const offsetX = (window.innerWidth / 2 - e.clientX) / 40;
             const offsetY = (window.innerHeight / 2 - e.clientY) / 40;
@@ -36,6 +36,8 @@ export default function NetworkBackground() {
 
     if (!init) return null;
 
+    const isHardware = theme === "hardware";
+
     return (
         <motion.div
             className="fixed inset-0 z-[-1] pointer-events-none scale-[1.05]"
@@ -43,6 +45,7 @@ export default function NetworkBackground() {
         >
             <Particles
                 id="tsparticles"
+                key={theme}
                 options={{
                     fpsLimit: 120,
                     interactivity: {
@@ -57,21 +60,21 @@ export default function NetworkBackground() {
                                 distance: 140,
                                 links: {
                                     opacity: 0.8,
-                                    color: "#00ccff",
+                                    color: isHardware ? "#fbbf24" : "#00ccff",
                                 },
                             },
                         },
                     },
                     particles: {
                         color: {
-                            value: "#ff3366",
+                            value: isHardware ? "#d97706" : "#ff3366",
                         },
                         links: {
-                            color: "#ffffff",
+                            color: isHardware ? "#fbbf2480" : "#ffffff",
                             distance: 150,
                             enable: true,
-                            opacity: 0.2,
-                            width: 1,
+                            opacity: isHardware ? 0.35 : 0.2,
+                            width: isHardware ? 1.5 : 1,
                         },
                         move: {
                             direction: "none",
@@ -80,7 +83,7 @@ export default function NetworkBackground() {
                                 default: "bounce",
                             },
                             random: true,
-                            speed: 1,
+                            speed: isHardware ? 0.3 : 1,
                             straight: false,
                         },
                         number: {
@@ -92,13 +95,15 @@ export default function NetworkBackground() {
                             value: 80,
                         },
                         opacity: {
-                            value: 0.5,
+                            value: isHardware ? 0.7 : 0.5,
                         },
                         shape: {
-                            type: "circle",
+                            type: isHardware ? "edge" : "circle",
                         },
                         size: {
-                            value: { min: 1, max: 3 },
+                            value: isHardware
+                                ? { min: 1.5, max: 3.5 }
+                                : { min: 1, max: 3 },
                         },
                     },
                     detectRetina: true,

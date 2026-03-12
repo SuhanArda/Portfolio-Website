@@ -2,8 +2,12 @@
 import { motion } from "framer-motion";
 import { FileText, ArrowRight, Github, Linkedin, Instagram } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Hero() {
+    const { theme } = useTheme();
+    const hw = theme === "hardware";
+
     return (
         <section className="min-h-screen flex items-center justify-center pt-20 pb-12 px-6 sm:px-12 relative z-10">
             <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -14,12 +18,22 @@ export default function Hero() {
                     transition={{ duration: 0.8 }}
                     className="flex flex-col gap-6"
                 >
-                    <div className="text-sm md:text-md uppercase tracking-widest text-[#00ccff] font-semibold">
-                        Portfolyo
+                    <div
+                        className="text-sm md:text-md uppercase tracking-widest font-semibold transition-colors duration-500"
+                        style={{ color: hw ? "#fbbf24" : "#00ccff" }}
+                    >
+                        {hw ? "Teknik Dosya" : "Portfolyo"}
                     </div>
                     <h1 className="text-5xl sm:text-6xl font-bold leading-tight">
                         I am{" "}
-                        <span className="inline-block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-[#ff3366] to-[#00ccff]">
+                        <span
+                            className="inline-block whitespace-nowrap text-transparent bg-clip-text transition-all duration-500"
+                            style={{
+                                backgroundImage: hw
+                                    ? "linear-gradient(to right, #d97706, #fbbf24)"
+                                    : "linear-gradient(to right, #ff3366, #00ccff)",
+                            }}
+                        >
                             Suhan Arda Öner.
                         </span>
                         <br /> A Computer & Mechatronics Engineer
@@ -36,14 +50,51 @@ export default function Hero() {
                             href="/cv.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 border border-[#ff3366] text-[#ff3366] hover:bg-[#ff3366] hover:text-white px-6 py-3 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(255,51,102,0.3)] hover:shadow-[0_0_25px_rgba(255,51,102,0.6)]"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
+                            style={{
+                                borderColor: hw ? "#d97706" : "#ff3366",
+                                color: hw ? "#d97706" : "#ff3366",
+                                boxShadow: hw
+                                    ? "0 0 15px rgba(217, 119, 6, 0.3)"
+                                    : "0 0 15px rgba(255, 51, 102, 0.3)",
+                            }}
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = hw ? "#d97706" : "#ff3366";
+                                el.style.color = hw ? "#000" : "#fff";
+                                el.style.boxShadow = hw
+                                    ? "0 0 25px rgba(217, 119, 6, 0.6)"
+                                    : "0 0 25px rgba(255, 51, 102, 0.6)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "transparent";
+                                el.style.color = hw ? "#d97706" : "#ff3366";
+                                el.style.boxShadow = hw
+                                    ? "0 0 15px rgba(217, 119, 6, 0.3)"
+                                    : "0 0 15px rgba(255, 51, 102, 0.3)";
+                            }}
                         >
                             <FileText size={20} />
                             Download CV
                         </a>
                         <a
                             href="/projects"
-                            className="flex items-center gap-2 border border-[#00ccff] text-[#00ccff] hover:bg-[#00ccff] hover:text-black px-6 py-3 rounded-full font-medium transition-all"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
+                            style={{
+                                borderColor: hw ? "#fbbf24" : "#00ccff",
+                                color: hw ? "#fbbf24" : "#00ccff",
+                            }}
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = hw ? "#fbbf24" : "#00ccff";
+                                el.style.color = hw ? "#000" : "#000";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "transparent";
+                                el.style.color = hw ? "#fbbf24" : "#00ccff";
+                            }}
                         >
                             Explore Work
                             <ArrowRight size={20} />
