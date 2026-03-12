@@ -27,6 +27,16 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
     const bottomRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // Lock body scroll when terminal is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [isOpen]);
+
     // Boot sequence on open
     useEffect(() => {
         if (!isOpen) {
@@ -148,7 +158,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
