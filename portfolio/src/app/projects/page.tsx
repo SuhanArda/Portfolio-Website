@@ -59,6 +59,13 @@ const detailedProjects = [
         techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
         description: "A modern, interactive portfolio website built with Next.js and Tailwind CSS. This project features a dynamic, AI-enhanced Matrix Rain background, a custom 3D-aware cursor, and a responsive, glassmorphic design system. It serves as a showcase of advanced frontend development techniques, including server-side rendering, client-side animations, and seamless integration with AI-generated visual effects.",
         githubUrl: "https://github.com/SuhanArda/Portfolio-Website"
+    },
+    {
+        id: 8,
+        title: "Digital-Memory-Architecture",
+        techStack: ["Simulink", "MATLAB", "Verilog"],
+        description: "A comprehensive digital memory architecture project developed using Simulink, MATLAB, and Verilog. This project demonstrates expertise in digital logic design, memory system modeling, and hardware description languages, showcasing a deep understanding of computer architecture principles.",
+        githubUrl: "https://github.com/SuhanArda/Digital-Memory-Architecture"
     }
 ];
 
