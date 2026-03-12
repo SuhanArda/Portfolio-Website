@@ -13,9 +13,6 @@ export default function PCBScrollProgress() {
         restDelta: 0.001
     });
 
-    // We only show this in hardware mode
-    if (theme !== "hardware") return null;
-
     // The glowing copper color
     const activeColor = "#fbbf24"; // Tailwind amber-400
     const inactiveColor = "rgba(255, 255, 255, 0.1)";
@@ -31,6 +28,9 @@ export default function PCBScrollProgress() {
     const pad2Scale = useTransform(springScroll, [0.3, 0.35], [1, 1.5]);
     const pad3Scale = useTransform(springScroll, [0.65, 0.7], [1, 1.5]);
     const pad4Scale = useTransform(springScroll, [0.95, 1], [1, 1.5]);
+
+    // We only show this in hardware mode
+    if (theme !== "hardware") return null;
 
     return (
         <div className="fixed right-4 top-0 h-full w-12 z-50 pointer-events-none flex items-center justify-center">
