@@ -58,7 +58,7 @@ export default function Hero() {
                             GitHub
                         </a>
                         <a
-                            href="https://www.linkedin.com/in/suhan-arda-%C3%B6ner-57826924b/"
+                            href="https://www.linkedin.com/in/suhan-arda-öner/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 border border-white/20 text-white hover:bg-[#0A66C2] border-transparent hover:border-[#0A66C2] px-6 py-3 rounded-full font-medium transition-all"
