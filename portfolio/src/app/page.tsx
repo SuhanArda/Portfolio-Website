@@ -5,10 +5,12 @@ import NetworkBackground from "@/components/NetworkBackground";
 import CustomCursor from "@/components/CustomCursor";
 import MatrixRain from "@/components/MatrixRain";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import PCBScrollProgress from "@/components/PCBScrollProgress";
 
 export default function Home() {
   return (
     <main className="min-h-screen relative">
+      <PCBScrollProgress />
       <CustomCursor />
       <ThemeSwitcher />
       <MatrixRain />

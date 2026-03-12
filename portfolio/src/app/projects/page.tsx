@@ -7,6 +7,7 @@ import MatrixRain from "@/components/MatrixRain";
 import CustomCursor from "@/components/CustomCursor";
 import NetworkBackground from "@/components/NetworkBackground";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import PCBScrollProgress from "@/components/PCBScrollProgress";
 import { useTheme } from "@/context/ThemeContext";
 
 const detailedProjects = [
@@ -72,6 +73,7 @@ export default function ProjectsPage() {
 
     return (
         <main className="min-h-screen pt-24 pb-20 px-6 sm:px-12 max-w-5xl mx-auto relative z-10">
+            <PCBScrollProgress />
             <CustomCursor />
             <ThemeSwitcher />
             <MatrixRain />
