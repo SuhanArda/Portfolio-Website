@@ -105,6 +105,11 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
                     content: [
                         "1. AI-Powered Dance App      (Python/Gemini API)",
                         "2. RBAC Management System    (Java/OOP)",
+                        "3. Local Greengrocer Inventory & Sales System (Java)",
+                        "4. Interactive Java Console Application (Java)",
+                        "5. SenseGlove-Cube-Triangle-Controller (C#/Unity/SenseGlove API)",
+                        "6. Portfolio-Website (Next.js/TypeScript/Tailwind CSS/Framer Motion)",
+                        "7. Interactive Terminal (Next.js/TypeScript/React)",
                     ].join("\n"),
                 });
                 break;
