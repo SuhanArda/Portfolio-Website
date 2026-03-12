@@ -22,7 +22,7 @@ export default function Hero() {
                         className="text-sm md:text-md uppercase tracking-widest font-semibold transition-colors duration-500"
                         style={{ color: hw ? "#fbbf24" : "#00ccff" }}
                     >
-                        {hw ? "Teknik Dosya" : "Portfolyo"}
+                        {hw ? "P"ortfolio" : "portfolio"}
                     </div>
                     <h1 className="text-5xl sm:text-6xl font-bold leading-tight">
                         I am{" "}
