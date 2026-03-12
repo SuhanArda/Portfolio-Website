@@ -12,7 +12,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>("software");
-    const [mounted, setMounted] = useState(false);
 
     // Read from localStorage on mount
     useEffect(() => {
@@ -23,7 +22,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         } else {
             document.documentElement.setAttribute("data-theme", "software");
         }
-        setMounted(true);
     }, []);
 
     const toggleTheme = useCallback(() => {
@@ -34,11 +32,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             return next;
         });
     }, []);
-
-    // Prevent flash of wrong theme
-    if (!mounted) {
-        return <>{children}</>;
-    }
 
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>

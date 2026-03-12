@@ -6,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import MatrixRain from "@/components/MatrixRain";
 import CustomCursor from "@/components/CustomCursor";
 import NetworkBackground from "@/components/NetworkBackground";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { useTheme } from "@/context/ThemeContext";
 
 const detailedProjects = [
     {
@@ -61,14 +63,17 @@ const detailedProjects = [
 
 export default function ProjectsPage() {
     const [openProjectId, setOpenProjectId] = useState<number | null>(null);
+    const { theme } = useTheme();
+    const hw = theme === "hardware";
 
     const handleToggle = (id: number) => {
         setOpenProjectId(prev => (prev === id ? null : id));
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-20 px-6 sm:px-12 max-w-5xl mx-auto relative z-10 selection:bg-[#ff3366] selection:text-white">
+        <main className="min-h-screen pt-24 pb-20 px-6 sm:px-12 max-w-5xl mx-auto relative z-10">
             <CustomCursor />
+            <ThemeSwitcher />
             <MatrixRain />
             <NetworkBackground />
 
@@ -78,8 +83,15 @@ export default function ProjectsPage() {
             </Link>
 
             <div className="mb-16">
-                <h1 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight mb-4">
-                    Software Architecture & Projects
+                <h1
+                    className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text tracking-tight mb-4 transition-all duration-500"
+                    style={{
+                        backgroundImage: hw
+                            ? "linear-gradient(to right, #fbbf24, #d97706)"
+                            : "linear-gradient(to right, white, #9ca3af)",
+                    }}
+                >
+                    {hw ? "Engineering Schematics & Projects" : "Software Architecture & Projects"}
                 </h1>
                 <p className="text-gray-400 text-lg max-w-2xl leading-relaxed">
                     A deep dive into my advanced technical projects, ranging from AI-driven biomechanics analysis to enterprise-scale Java backend systems. Select a project to view the full architectural overview.
@@ -97,8 +109,11 @@ export default function ProjectsPage() {
                 ))}
             </div>
 
-            {/* Ambient Background glow for the projects list */}
-            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00ccff] rounded-full blur-[150px] opacity-[0.03] pointer-events-none z-[-1]" />
+            {/* Ambient Background glow */}
+            <div
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[150px] opacity-[0.03] pointer-events-none z-[-1] transition-colors duration-700"
+                style={{ backgroundColor: hw ? "#d97706" : "#00ccff" }}
+            />
         </main>
     );
 }

@@ -1,21 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function CustomCursor() {
     const [isHovered, setIsHovered] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const { theme } = useTheme();
+    const hw = theme === "hardware";
 
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
-    // Smooth follow for the outer circle
     const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
     const smoothX = useSpring(cursorX, springConfig);
     const smoothY = useSpring(cursorY, springConfig);
 
     useEffect(() => {
-        // Hide cursor on touch devices or show it
         setIsVisible(true);
 
         const moveCursor = (e: MouseEvent) => {
@@ -49,12 +50,19 @@ export default function CustomCursor() {
 
     if (!isVisible) return null;
 
+    const dotColor = hw ? "#d97706" : "#ff3366";
+    const ringColor = hw ? "rgba(251, 191, 36, 0.5)" : "rgba(0, 204, 255, 0.5)";
+    const ringHoverColor = hw ? "rgba(251, 191, 36, 0.8)" : "rgba(0, 204, 255, 0.8)";
+    const ringHoverBg = hw ? "rgba(251, 191, 36, 0.1)" : "rgba(0, 204, 255, 0.1)";
+    const decorColor = hw ? "#fbbf24" : "#00ccff";
+
     return (
         <>
             {/* Center sharp dot */}
             <motion.div
-                className="fixed top-0 left-0 w-[6px] h-[6px] bg-[#ff3366] rounded-full pointer-events-none z-[9999]"
+                className="fixed top-0 left-0 w-[6px] h-[6px] rounded-full pointer-events-none z-[9999] transition-colors duration-500"
                 style={{
+                    backgroundColor: dotColor,
                     x: cursorX,
                     y: cursorY,
                     translateX: "-50%",
@@ -73,12 +81,12 @@ export default function CustomCursor() {
                 }}
             >
                 <motion.div
-                    className="w-full h-full rounded-full border-[1.5px] border-[#00ccff]/50"
+                    className="w-full h-full rounded-full border-[1.5px]"
                     animate={{
                         rotate: 360,
                         scale: isHovered ? 1.6 : 1,
-                        backgroundColor: isHovered ? "rgba(0, 204, 255, 0.1)" : "rgba(0, 204, 255, 0)",
-                        borderColor: isHovered ? "rgba(0, 204, 255, 0.8)" : "rgba(0, 204, 255, 0.5)",
+                        backgroundColor: isHovered ? ringHoverBg : "rgba(0, 0, 0, 0)",
+                        borderColor: isHovered ? ringHoverColor : ringColor,
                     }}
                     transition={{
                         rotate: { duration: 10, ease: "linear", repeat: Infinity },
@@ -89,9 +97,8 @@ export default function CustomCursor() {
                         transformOrigin: "center center",
                     }}
                 >
-                    {/* Add tiny decorations to circle to make rotation visible */}
-                    <div className="absolute top-[-2px] left-1/2 w-1 h-1 bg-[#00ccff] rounded-full -translate-x-1/2" />
-                    <div className="absolute bottom-[-2px] left-1/2 w-1 h-1 bg-[#00ccff] rounded-full -translate-x-1/2" />
+                    <div className="absolute top-[-2px] left-1/2 w-1 h-1 rounded-full -translate-x-1/2 transition-colors duration-500" style={{ backgroundColor: decorColor }} />
+                    <div className="absolute bottom-[-2px] left-1/2 w-1 h-1 rounded-full -translate-x-1/2 transition-colors duration-500" style={{ backgroundColor: decorColor }} />
                 </motion.div>
             </motion.div>
         </>

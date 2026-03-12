@@ -1,13 +1,16 @@
+"use client";
 import Hero from "@/components/Hero";
 import Experience from "@/components/Experience";
 import NetworkBackground from "@/components/NetworkBackground";
 import CustomCursor from "@/components/CustomCursor";
 import MatrixRain from "@/components/MatrixRain";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative selection:bg-[#ff3366] selection:text-white">
+    <main className="min-h-screen relative">
       <CustomCursor />
+      <ThemeSwitcher />
       <MatrixRain />
       <NetworkBackground />
       <Hero />
