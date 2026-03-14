@@ -22,7 +22,18 @@
   --card-glow: rgba(0, 204, 255, 0.2);
   --card-radius: 1rem;
   --selection-bg: #ff3366;
+  
+  /* Hide scrollbars globally */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
 }
+
+/* Hide scrollbars globally for Chrome, Safari and Opera */
+[data-theme="software"]::-webkit-scrollbar,
+:root[data-theme="software"]::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* ── Hardware Mode (Blueprint/PCB) ── */
 [data-theme="hardware"] {

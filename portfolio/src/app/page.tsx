@@ -6,11 +6,13 @@ import CustomCursor from "@/components/CustomCursor";
 import MatrixRain from "@/components/MatrixRain";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import PCBScrollProgress from "@/components/PCBScrollProgress";
+import MatrixScrollDecryptor from "@/components/MatrixScrollDecryptor";
 
 export default function Home() {
   return (
     <main className="min-h-screen relative">
       <PCBScrollProgress />
+      <MatrixScrollDecryptor />
       <CustomCursor />
       <ThemeSwitcher />
       <MatrixRain />
