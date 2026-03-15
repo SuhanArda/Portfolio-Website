@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2 } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -98,6 +98,27 @@ export default function Hero() {
                         >
                             Explore Work
                             <ArrowRight size={20} />
+                        </a>
+                        <a
+                            href="/github-city"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
+                            style={{
+                                borderColor: "#00ff41",
+                                color: "#00ff41",
+                            }}
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "rgba(0, 255, 65, 0.1)";
+                                el.style.boxShadow = "0 0 15px rgba(0, 255, 65, 0.6)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "transparent";
+                                el.style.boxShadow = "none";
+                            }}
+                        >
+                            <Building2 size={20} />
+                            My GitHub City
                         </a>
                         <a
                             href="https://github.com/SuhanArda"

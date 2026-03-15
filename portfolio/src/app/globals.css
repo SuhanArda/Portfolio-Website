@@ -161,3 +161,9 @@ body {
   background: var(--selection-bg);
   color: white;
 }
+
+/* ── Force Cursor Visibility (e.g. GitHub City) ── */
+.force-cursor-visible,
+.force-cursor-visible * {
+  cursor: crosshair !important;
+}
