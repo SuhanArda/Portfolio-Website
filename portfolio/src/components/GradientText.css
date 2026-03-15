@@ -1,0 +1,27 @@
+.animated-gradient-text {
+    position: relative;
+    display: inline-flex;
+}
+
+.animated-gradient-text .text-content {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: 100%;
+    height: 100%;
+}
+
+.animated-gradient-text.with-border {
+    padding: 0.1em;
+    border-radius: 0.25em;
+}
+
+.gradient-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.8;
+    filter: blur(8px);
+    /* Hafif bir neon parlama efekti verir */
+}

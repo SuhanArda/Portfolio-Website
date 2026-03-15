@@ -315,14 +315,12 @@ const DataTraffic = () => {
     );
 };
 
-// GÜNCELLENMİŞ: DAHA KISA TIKLANABİLİR CV KULESİ
 const TopSecretTower = ({ active }: { active: boolean }) => {
     const towerRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
 
     useFrame((state, delta) => {
         if (active && towerRef.current) {
-            // Hedef yükseklik 6 yapıldı (kule boyu 12, taban 0'da)
             if (towerRef.current.position.y < 6) {
                 towerRef.current.position.y += delta * 15;
             }

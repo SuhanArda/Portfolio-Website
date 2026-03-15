@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2 } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
+import GradientText from "./GradientText";
+
 
 export default function Hero() {
     const { theme } = useTheme();
@@ -26,16 +28,21 @@ export default function Hero() {
                     </div>
                     <h1 className="text-5xl sm:text-6xl font-bold leading-tight">
                         I am{" "}
-                        <span
-                            className="inline-block whitespace-nowrap text-transparent bg-clip-text transition-all duration-500"
-                            style={{
-                                backgroundImage: hw
-                                    ? "linear-gradient(to right, #d97706, #fbbf24)"
-                                    : "linear-gradient(to right, #ff3366, #00ccff)",
-                            }}
+
+                        <GradientText
+                            // Temaya göre renk dizisi değişir!
+                            colors={
+                                hw
+                                    ? ["#d97706", "#fbbf24", "#f59e0b"]  // Donanım (Sarı/Turuncu)
+                                    : ["#ff3366", "#00ccff", "#b000ff"]  // Yazılım (Pembe/Mavi/Mor)
+                            }
+                            animationSpeed={4} // Akış hızını buradan ayarlayabilirsin
+                            showBorder={false} // İstersen true yapıp isminin arkasına parlayan bir kutu ekleyebilirsin
+                            className="inline-block pb-2"
                         >
                             Suhan Arda Öner.
-                        </span>
+                        </GradientText>
+
                         <br /> A Computer & Mechatronics Engineer
                     </h1>
                     <p className="text-gray-400 text-lg max-w-lg mt-4 leading-relaxed">
