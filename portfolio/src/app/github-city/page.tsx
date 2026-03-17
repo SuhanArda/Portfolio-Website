@@ -373,20 +373,20 @@ const DroneController = ({ streetMode, keysRef }: { streetMode: boolean, keysRef
 
     useFrame((state, delta) => {
         if (streetMode) {
-            if (state.camera.position.y > 1.05) {
-                state.camera.position.lerp(new THREE.Vector3(state.camera.position.x, 1.0, state.camera.position.z), 0.05);
-            } else {
-                state.camera.position.y = 1.0;
-            }
-
             if (controlsRef.current && controlsRef.current.isLocked) {
-                const speed = 15 * delta;
-                if (keysRef.current.w) controlsRef.current.moveForward(speed);
-                if (keysRef.current.s) controlsRef.current.moveForward(-speed);
-                if (keysRef.current.a) controlsRef.current.moveRight(-speed);
-                if (keysRef.current.d) controlsRef.current.moveRight(speed);
+                const speed = 25 * delta;
 
-                state.camera.position.y = 1.0;
+                if (keysRef.current.w) state.camera.translateZ(-speed);
+                if (keysRef.current.s) state.camera.translateZ(speed);
+                if (keysRef.current.a) state.camera.translateX(-speed);
+                if (keysRef.current.d) state.camera.translateX(speed);
+                if (keysRef.current.space) {
+                    state.camera.position.y += speed;
+                }
+
+                if (state.camera.position.y < 0.5) {
+                    state.camera.position.y = 0.5;
+                }
             }
         } else {
             if (state.camera.position.y < 14.5) {
@@ -415,7 +415,7 @@ export default function GitHubCity() {
     const [easterEgg, setEasterEgg] = useState(false);
     const konamiBuffer = useRef("");
 
-    const keysRef = useRef({ w: false, a: false, s: false, d: false });
+    const keysRef = useRef({ w: false, a: false, s: false, d: false, space: false });
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
