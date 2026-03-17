@@ -36,8 +36,8 @@ export default function Hero() {
                                     ? ["#d97706", "#fbbf24", "#f59e0b"]  // Donanım (Sarı/Turuncu)
                                     : ["#ff3366", "#00ccff", "#b000ff"]  // Yazılım (Pembe/Mavi/Mor)
                             }
-                            animationSpeed={4} // Akış hızını buradan ayarlayabilirsin
-                            showBorder={false} // İstersen true yapıp isminin arkasına parlayan bir kutu ekleyebilirsin
+                            animationSpeed={4}
+                            showBorder={false}
                             className="inline-block pb-2"
                         >
                             Suhan Arda Öner.
@@ -57,17 +57,11 @@ export default function Hero() {
                             href="/cv.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
-                            style={{
-                                borderColor: hw ? "#d97706" : "#ff3366",
-                                color: hw ? "#d97706" : "#ff3366",
-                                boxShadow: hw
-                                    ? "0 0 15px rgba(217, 119, 6, 0.3)"
-                                    : "0 0 15px rgba(255, 51, 102, 0.3)",
-                            }}
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
                                 el.style.backgroundColor = hw ? "#d97706" : "#ff3366";
+                                el.style.borderColor = hw ? "#d97706" : "#ff3366";
                                 el.style.color = hw ? "#000" : "#fff";
                                 el.style.boxShadow = hw
                                     ? "0 0 25px rgba(217, 119, 6, 0.6)"
@@ -75,11 +69,10 @@ export default function Hero() {
                             }}
                             onMouseLeave={(e) => {
                                 const el = e.currentTarget;
-                                el.style.backgroundColor = "transparent";
-                                el.style.color = hw ? "#d97706" : "#ff3366";
-                                el.style.boxShadow = hw
-                                    ? "0 0 15px rgba(217, 119, 6, 0.3)"
-                                    : "0 0 15px rgba(255, 51, 102, 0.3)";
+                                el.style.backgroundColor = "";
+                                el.style.borderColor = "";
+                                el.style.color = "";
+                                el.style.boxShadow = "";
                             }}
                         >
                             <FileText size={20} />
@@ -87,20 +80,23 @@ export default function Hero() {
                         </a>
                         <a
                             href="/projects"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
-                            style={{
-                                borderColor: hw ? "#fbbf24" : "#00ccff",
-                                color: hw ? "#fbbf24" : "#00ccff",
-                            }}
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
                                 el.style.backgroundColor = hw ? "#fbbf24" : "#00ccff";
-                                el.style.color = hw ? "#000" : "#000";
+                                el.style.borderColor = hw ? "#fbbf24" : "#00ccff";
+                                el.style.color = "#000";
+                                // Buna da hover durumunda hafif bir parlama ekledim, çok uyumlu duracak
+                                el.style.boxShadow = hw
+                                    ? "0 0 20px rgba(251, 191, 36, 0.5)"
+                                    : "0 0 20px rgba(0, 204, 255, 0.5)";
                             }}
                             onMouseLeave={(e) => {
                                 const el = e.currentTarget;
-                                el.style.backgroundColor = "transparent";
-                                el.style.color = hw ? "#fbbf24" : "#00ccff";
+                                el.style.backgroundColor = "";
+                                el.style.borderColor = "";
+                                el.style.color = "";
+                                el.style.boxShadow = "";
                             }}
                         >
                             Explore Work
@@ -108,25 +104,26 @@ export default function Hero() {
                         </a>
                         <a
                             href="/github-city"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border"
-                            style={{
-                                borderColor: "#00ff41",
-                                color: "#00ff41",
-                            }}
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
-                                el.style.backgroundColor = "rgba(0, 255, 65, 0.1)";
-                                el.style.boxShadow = "0 0 15px rgba(0, 255, 65, 0.6)";
+                                el.style.backgroundColor = "rgba(0, 255, 65, 0.15)";
+                                el.style.borderColor = "#00ff41";
+                                el.style.color = "#00ff41";
+                                el.style.boxShadow = "0 0 20px rgba(0, 255, 65, 0.4)";
                             }}
                             onMouseLeave={(e) => {
                                 const el = e.currentTarget;
-                                el.style.backgroundColor = "transparent";
-                                el.style.boxShadow = "none";
+                                el.style.backgroundColor = "";
+                                el.style.borderColor = "";
+                                el.style.color = "";
+                                el.style.boxShadow = "";
                             }}
                         >
                             <Building2 size={20} />
                             My GitHub City
                         </a>
+
                         <a
                             href="https://github.com/SuhanArda"
                             target="_blank"
