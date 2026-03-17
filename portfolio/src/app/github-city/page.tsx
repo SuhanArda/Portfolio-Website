@@ -99,14 +99,15 @@ const fragmentShaderSource = `
     }
 `;
 
-const Building = ({ repo, position, languageCache, setLanguageCache, audioEnabled, easterEgg, handleTargetLock }: {
+const Building = ({ repo, position, languageCache, setLanguageCache, audioEnabled, easterEgg, handleTargetLock, streetMode }: {
     repo: Repo,
     position: [number, number, number],
     languageCache: Record<string, Record<string, number>>,
     setLanguageCache: React.Dispatch<React.SetStateAction<Record<string, Record<string, number>>>>,
     audioEnabled: boolean,
     easterEgg: boolean,
-    handleTargetLock: (isLocked: boolean, name?: string) => void // SİSTEM MİMARİSİ: Parametre tanımlandı
+    handleTargetLock: (isLocked: boolean, name?: string) => void
+    streetMode: boolean
 }) => {
     const buildingRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
@@ -195,6 +196,16 @@ const Building = ({ repo, position, languageCache, setLanguageCache, audioEnable
         <mesh
             ref={buildingRef}
             position={[position[0], height / 2, position[2]]}
+            onClick={(e) => {
+                if (easterEgg) return;
+                e.stopPropagation();
+
+                if (streetMode && !document.pointerLockElement) {
+                    return;
+                }
+
+                window.open(repo.html_url, '_blank');
+            }}
             onPointerOver={(e) => {
                 if (easterEgg) return;
                 e.stopPropagation();
@@ -456,10 +467,11 @@ export default function GitHubCity() {
     const hudYawRef = useRef<HTMLSpanElement>(null);
     const hudCrosshairRef = useRef<HTMLDivElement>(null);
     const hudTargetTextRef = useRef<HTMLDivElement>(null);
+    const lockAudioRef = useRef<HTMLAudioElement | null>(null);
 
     const handleTargetLock = (isLocked: boolean, targetName: string = "") => {
         if (hudTargetTextRef.current) {
-            hudTargetTextRef.current.innerText = isLocked ? `[ TARGET LOCKED: ${targetName} ]` : "NO TARGET";
+            hudTargetTextRef.current.innerText = isLocked ? `[ TARGET LOCKED: ${targetName} ] - L-CLICK TO ACCESS` : "NO TARGET";
             hudTargetTextRef.current.style.color = isLocked ? "#ff0000" : "#00ff41";
             hudTargetTextRef.current.style.textShadow = isLocked ? "0 0 10px rgba(255,0,0,0.8)" : "0 0 5px rgba(0,255,65,0.8)";
         }
@@ -467,8 +479,17 @@ export default function GitHubCity() {
             hudCrosshairRef.current.style.borderColor = isLocked ? "#ff0000" : "#00ff41";
             hudCrosshairRef.current.style.transform = isLocked ? "scale(1.5) rotate(45deg)" : "scale(1) rotate(0deg)";
         }
-    };
 
+        if (lockAudioRef.current && audioEnabled) {
+            if (isLocked) {
+                lockAudioRef.current.currentTime = 0;
+                lockAudioRef.current.play().catch(() => { });
+            } else {
+                lockAudioRef.current.pause();
+                lockAudioRef.current.currentTime = 0;
+            }
+        }
+    };
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
@@ -512,6 +533,12 @@ export default function GitHubCity() {
             audio.pause();
             audio.src = "";
         };
+    }, []);
+
+    useEffect(() => {
+        const audio = new Audio("/lockon.mp3");
+        audio.volume = 0.6;
+        lockAudioRef.current = audio;
     }, []);
 
     useEffect(() => {
@@ -713,7 +740,17 @@ export default function GitHubCity() {
                     {repos.map((repo, idx) => {
                         const x = (idx % cols) * spacing - offsetX;
                         const z = Math.floor(idx / cols) * spacing - offsetZ;
-                        return <Building key={repo.id} repo={repo} position={[x, 0, z]} languageCache={languageCache} setLanguageCache={setLanguageCache} audioEnabled={audioEnabled} easterEgg={easterEgg} handleTargetLock={handleTargetLock} />; // SİSTEM MİMARİSİ: Parametre buraya bağlandı
+                        return <Building
+                            key={repo.id}
+                            repo={repo}
+                            position={[x, 0, z]}
+                            languageCache={languageCache}
+                            setLanguageCache={setLanguageCache}
+                            audioEnabled={audioEnabled}
+                            easterEgg={easterEgg}
+                            handleTargetLock={handleTargetLock}
+                            streetMode={streetMode}
+                        />;
                     })}
                 </group>
 
