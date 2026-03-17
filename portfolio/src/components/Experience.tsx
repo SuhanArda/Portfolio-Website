@@ -143,7 +143,7 @@ export default function Experience() {
                                             <motion.h3 layoutId={`title-${item.slug}`} className="relative z-10 text-xl sm:text-2xl font-semibold mb-4 text-white hover:text-gray-200 py-1 transition-colors leading-tight">
                                                 <DecryptedText
                                                     text={item.title}
-                                                    animateOn="inViewHover"
+                                                    animateOn="view"
                                                     speed={50}
                                                     maxIterations={15}
                                                     sequential={true}
