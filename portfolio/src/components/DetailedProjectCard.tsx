@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Code2, Github } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import DecryptedText from "./DecryptedText";
 
 interface ProjectDetails {
     id: number;
@@ -48,36 +49,41 @@ export default function DetailedProjectCard({
                 <div className="flex justify-between items-start gap-4">
                     <div className="flex items-center gap-4">
                         <div
-                            className={`p-3 border transition-colors ${
-                                hw
-                                    ? "rounded-sm bg-white/5 border-white/10 group-hover:border-[#d97706]"
-                                    : "rounded-xl bg-white/5 border-white/10 group-hover:border-[#00ccff]"
-                            }`}
+                            className={`p-3 border transition-colors ${hw
+                                ? "rounded-sm bg-white/5 border-white/10 group-hover:border-[#d97706]"
+                                : "rounded-xl bg-white/5 border-white/10 group-hover:border-[#00ccff]"
+                                }`}
                         >
                             <Code2
-                                className={`w-6 h-6 transition-colors ${
-                                    isOpen
-                                        ? hw ? "text-[#d97706]" : "text-[#00ccff]"
-                                        : hw
-                                            ? "text-gray-400 group-hover:text-[#fbbf24]"
-                                            : "text-gray-400 group-hover:text-white"
-                                }`}
+                                className={`w-6 h-6 transition-colors ${isOpen
+                                    ? hw ? "text-[#d97706]" : "text-[#00ccff]"
+                                    : hw
+                                        ? "text-gray-400 group-hover:text-[#fbbf24]"
+                                        : "text-gray-400 group-hover:text-white"
+                                    }`}
                             />
                         </div>
                         <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                            {project.title}
+                            <DecryptedText
+                                text={project.title}
+                                animateOn="view"
+                                speed={50}
+                                maxIterations={12}
+                                sequential={true}
+                                revealDirection="start"
+                                encryptedClassName={`font-mono ${hw ? "text-[#fbbf24]" : "text-[#00ccff]"}`}
+                            />
                         </h3>
                     </div>
                     <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`p-2 rounded-full flex-shrink-0 transition-colors ${
-                            isOpen
-                                ? hw
-                                    ? "bg-[#d97706]/20 text-[#d97706]"
-                                    : "bg-[#00ccff]/20 text-[#00ccff]"
-                                : "bg-white/5 text-gray-400 group-hover:bg-white/10"
-                        }`}
+                        className={`p-2 rounded-full flex-shrink-0 transition-colors ${isOpen
+                            ? hw
+                                ? "bg-[#d97706]/20 text-[#d97706]"
+                                : "bg-[#00ccff]/20 text-[#00ccff]"
+                            : "bg-white/5 text-gray-400 group-hover:bg-white/10"
+                            }`}
                     >
                         <ChevronDown className="w-5 h-5" />
                     </motion.div>
@@ -87,11 +93,10 @@ export default function DetailedProjectCard({
                     {project.techStack.map((tech, idx) => (
                         <span
                             key={idx}
-                            className={`px-3 py-1 text-xs font-mono rounded-full uppercase tracking-wider transition-colors duration-500 ${
-                                hw
-                                    ? "bg-[#0a192f]/60 border border-white/15 text-[#fbbf24]"
-                                    : "bg-black/40 border border-white/10 text-[#00ccff]"
-                            }`}
+                            className={`px-3 py-1 text-xs font-mono rounded-full uppercase tracking-wider transition-colors duration-500 ${hw
+                                ? "bg-[#0a192f]/60 border border-white/15 text-[#fbbf24]"
+                                : "bg-black/40 border border-white/10 text-[#00ccff]"
+                                }`}
                         >
                             {tech}
                         </span>
@@ -118,11 +123,10 @@ export default function DetailedProjectCard({
                                             href={project.githubUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg transition-colors border ${
-                                                hw
-                                                    ? "text-[#d97706] border-[#d97706]/30 hover:bg-[#d97706]/10 hover:text-white"
-                                                    : "text-[#ff3366] border-[#ff3366]/30 hover:bg-[#ff3366]/10 hover:text-white"
-                                            }`}
+                                            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg transition-colors border ${hw
+                                                ? "text-[#d97706] border-[#d97706]/30 hover:bg-[#d97706]/10 hover:text-white"
+                                                : "text-[#ff3366] border-[#ff3366]/30 hover:bg-[#ff3366]/10 hover:text-white"
+                                                }`}
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <Github className="w-4 h-4" />

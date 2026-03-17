@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "@/context/ThemeContext";
+import DecryptedText from "./DecryptedText";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -357,15 +358,26 @@ export default function NodeProjectExplorer() {
 
       {/* Narrative Header */}
       <div className="text-center mb-16 relative z-20">
-        <h2
-          className="text-4xl text-transparent bg-clip-text font-bold mb-4 transition-all duration-500"
-          style={{
-            backgroundImage: !isSoftware
-              ? "linear-gradient(to right, #fbbf24, #d97706)"
-              : "linear-gradient(to right, white, #9ca3af)",
-          }}
-        >
-          Node-Based Graph Project Explorer
+        <h2 className="text-4xl font-bold mb-4">
+          <span
+            className="text-transparent bg-clip-text inline-block"
+            style={{
+              backgroundImage: !isSoftware
+                ? "linear-gradient(to right, #fbbf24, #d97706)"
+                : "linear-gradient(to right, white, #9ca3af)",
+            }}
+          >
+            <DecryptedText
+              text="Node-Based Graph Project Explorer"
+              animateOn="inViewHover"
+              speed={50}
+              maxIterations={15}
+              sequential={true}
+              revealDirection="start"
+              className=""
+              encryptedClassName={`font-mono ${!isSoftware ? "text-[#b45309]" : "text-[#4b5563]"}`}
+            />
+          </span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Mapping the bridge between code and physical hardware. Interact with the core nodes below to explore my technical ecosystem.
