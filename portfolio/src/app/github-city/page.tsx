@@ -99,13 +99,14 @@ const fragmentShaderSource = `
     }
 `;
 
-const Building = ({ repo, position, languageCache, setLanguageCache, audioEnabled, easterEgg }: {
+const Building = ({ repo, position, languageCache, setLanguageCache, audioEnabled, easterEgg, handleTargetLock }: {
     repo: Repo,
     position: [number, number, number],
     languageCache: Record<string, Record<string, number>>,
     setLanguageCache: React.Dispatch<React.SetStateAction<Record<string, Record<string, number>>>>,
     audioEnabled: boolean,
-    easterEgg: boolean
+    easterEgg: boolean,
+    handleTargetLock: (isLocked: boolean, name?: string) => void // SİSTEM MİMARİSİ: Parametre tanımlandı
 }) => {
     const buildingRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
@@ -133,7 +134,6 @@ const Building = ({ repo, position, languageCache, setLanguageCache, audioEnable
         }
     }, [hovered, repo.name, languageCache, setLanguageCache, easterEgg]);
 
-    // Easter Egg aktifse hover kapanır
     useEffect(() => {
         if (easterEgg && hovered) setHovered(false);
     }, [easterEgg, hovered]);
@@ -158,7 +158,6 @@ const Building = ({ repo, position, languageCache, setLanguageCache, audioEnable
     }), [threeColor, height]);
 
     useFrame((state, delta) => {
-        // YENİ: Easter Egg tetiklendiğinde binalar yerin dibine çöker
         if (buildingRef.current) {
             const targetY = easterEgg ? -height : height / 2;
             buildingRef.current.position.y = THREE.MathUtils.lerp(
@@ -197,15 +196,20 @@ const Building = ({ repo, position, languageCache, setLanguageCache, audioEnable
             ref={buildingRef}
             position={[position[0], height / 2, position[2]]}
             onPointerOver={(e) => {
-                if (easterEgg) return; // Çökerken hover engellenir
+                if (easterEgg) return;
                 e.stopPropagation();
                 setHovered(true);
+                handleTargetLock(true, repo.name);
+
                 if (audioEnabled && audioRef.current) {
                     audioRef.current.currentTime = 0;
                     audioRef.current.play().catch(() => { });
                 }
             }}
-            onPointerOut={() => setHovered(false)}
+            onPointerOut={() => {
+                setHovered(false);
+                handleTargetLock(false);
+            }}
         >
             <boxGeometry args={[1.5, height, 1.5]} />
             <shaderMaterial
@@ -332,7 +336,7 @@ const TopSecretTower = ({ active }: { active: boolean }) => {
     return (
         <mesh
             ref={towerRef}
-            position={[0, -20, 0]} // Daha derinden başlar
+            position={[0, -20, 0]}
             onClick={(e) => {
                 e.stopPropagation();
                 window.open('/cv.pdf', '_blank');
@@ -347,14 +351,13 @@ const TopSecretTower = ({ active }: { active: boolean }) => {
                 document.body.style.cursor = 'auto';
             }}
         >
-            <boxGeometry args={[4, 12, 4]} /> {/* Yükseklik 30'dan 12'ye düşürüldü */}
+            <boxGeometry args={[4, 12, 4]} />
             <meshStandardMaterial
                 color="#ff0000"
                 emissive="#ff0000"
                 emissiveIntensity={hovered ? 3 : 2}
                 toneMapped={false}
             />
-            {/* HTML Tooltip pozisyonu kuleye orantılı olarak 7'ye çekildi */}
             <Html position={[0, 7, 0]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
                 <div className="bg-red-950/90 border-2 border-red-500 p-4 rounded text-center animate-pulse shadow-[0_0_30px_rgba(255,0,0,0.8)]">
                     <h1 className="text-red-500 font-bold text-3xl tracking-widest">TOP SECRET</h1>
@@ -368,7 +371,20 @@ const TopSecretTower = ({ active }: { active: boolean }) => {
     );
 };
 
-const DroneController = ({ streetMode, keysRef }: { streetMode: boolean, keysRef: React.MutableRefObject<any> }) => {
+const DroneController = ({
+    streetMode,
+    keysRef,
+    hudRefs
+}: {
+    streetMode: boolean,
+    keysRef: React.MutableRefObject<any>,
+    hudRefs: {
+        alt: React.RefObject<HTMLSpanElement | null>,
+        coord: React.RefObject<HTMLSpanElement | null>,
+        pitch: React.RefObject<HTMLSpanElement | null>,
+        yaw: React.RefObject<HTMLSpanElement | null>
+    }
+}) => {
     const controlsRef = useRef<any>(null);
 
     useFrame((state, delta) => {
@@ -380,12 +396,29 @@ const DroneController = ({ streetMode, keysRef }: { streetMode: boolean, keysRef
                 if (keysRef.current.s) state.camera.translateZ(speed);
                 if (keysRef.current.a) state.camera.translateX(-speed);
                 if (keysRef.current.d) state.camera.translateX(speed);
+
                 if (keysRef.current.space) {
                     state.camera.position.y += speed;
                 }
 
                 if (state.camera.position.y < 0.5) {
                     state.camera.position.y = 0.5;
+                }
+
+                if (hudRefs.alt.current) {
+                    hudRefs.alt.current.innerText = state.camera.position.y.toFixed(2);
+                }
+                if (hudRefs.coord.current) {
+                    hudRefs.coord.current.innerText = `X: ${state.camera.position.x.toFixed(1)} | Z: ${state.camera.position.z.toFixed(1)}`;
+                }
+                if (hudRefs.pitch.current) {
+                    const pitch = (state.camera.rotation.x * (180 / Math.PI)).toFixed(1);
+                    hudRefs.pitch.current.innerText = pitch;
+                }
+                if (hudRefs.yaw.current) {
+                    let heading = (state.camera.rotation.y * (180 / Math.PI)) % 360;
+                    if (heading < 0) heading += 360;
+                    hudRefs.yaw.current.innerText = Math.abs(heading).toFixed(0).padStart(3, '0');
                 }
             }
         } else {
@@ -417,6 +450,25 @@ export default function GitHubCity() {
 
     const keysRef = useRef({ w: false, a: false, s: false, d: false, space: false });
 
+    const hudAltRef = useRef<HTMLSpanElement>(null);
+    const hudCoordRef = useRef<HTMLSpanElement>(null);
+    const hudPitchRef = useRef<HTMLSpanElement>(null);
+    const hudYawRef = useRef<HTMLSpanElement>(null);
+    const hudCrosshairRef = useRef<HTMLDivElement>(null);
+    const hudTargetTextRef = useRef<HTMLDivElement>(null);
+
+    const handleTargetLock = (isLocked: boolean, targetName: string = "") => {
+        if (hudTargetTextRef.current) {
+            hudTargetTextRef.current.innerText = isLocked ? `[ TARGET LOCKED: ${targetName} ]` : "NO TARGET";
+            hudTargetTextRef.current.style.color = isLocked ? "#ff0000" : "#00ff41";
+            hudTargetTextRef.current.style.textShadow = isLocked ? "0 0 10px rgba(255,0,0,0.8)" : "0 0 5px rgba(0,255,65,0.8)";
+        }
+        if (hudCrosshairRef.current) {
+            hudCrosshairRef.current.style.borderColor = isLocked ? "#ff0000" : "#00ff41";
+            hudCrosshairRef.current.style.transform = isLocked ? "scale(1.5) rotate(45deg)" : "scale(1) rotate(0deg)";
+        }
+    };
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
@@ -427,7 +479,6 @@ export default function GitHubCity() {
                 case 'd': keysRef.current.d = true; break;
             }
 
-            // SUHAN Şifre Takibi
             konamiBuffer.current += key;
             if (konamiBuffer.current.length > 10) konamiBuffer.current = konamiBuffer.current.slice(-10);
             if (konamiBuffer.current.includes("suhan") && !easterEgg) {
@@ -582,6 +633,60 @@ export default function GitHubCity() {
                 <div><span className="text-gray-400">DATABANKS:</span> <span className="text-[#00ff41]">{repos.length} ACTIVE</span></div>
             </div>
 
+            <div className={`absolute inset-0 pointer-events-none z-40 transition-opacity duration-700 ${streetMode ? 'opacity-100' : 'opacity-0'}`}>
+
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-20" />
+
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center opacity-80 pointer-events-none">
+                    <div className="relative flex items-center justify-center">
+                        <div className="w-12 h-[1px] bg-[#00ff41] absolute -left-16 opacity-50" />
+                        <div className="w-12 h-[1px] bg-[#00ff41] absolute -right-16 opacity-50" />
+                        <div className="w-[1px] h-12 bg-[#00ff41] absolute -top-16 opacity-50" />
+                        <div className="w-[1px] h-12 bg-[#00ff41] absolute -bottom-16 opacity-50" />
+                        <div
+                            ref={hudCrosshairRef}
+                            className="w-8 h-8 border-2 border-[#00ff41] rounded-full transition-all duration-300 ease-out"
+                        />
+                        <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse absolute" />
+                    </div>
+                    <div
+                        ref={hudTargetTextRef}
+                        className="absolute top-10 text-[#00ff41] font-mono text-[10px] tracking-[0.2em] font-bold transition-colors duration-300 whitespace-nowrap"
+                    >
+                        NO TARGET
+                    </div>
+                </div>
+
+                <div className="absolute top-56 left-6 text-[#00ff41] font-mono text-xs drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">
+                    <div className="mb-2 border-b border-[#00ff41]/50 pb-1 w-40">UAV LINK: <span className="text-white animate-pulse">ACTIVE</span></div>
+                    <div className="flex justify-between w-40"><span>SYS_MEM:</span> <span className="text-white">OPTIMAL</span></div>
+                    <div className="flex justify-between w-40"><span>LATENCY:</span> <span className="text-white">12ms</span></div>
+                </div>
+
+
+                <div className="absolute top-10 right-10 text-[#00ff41] font-mono text-xs text-right drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">
+                    <div className="mb-2 border-b border-[#00ff41]/50 pb-1 w-40 flex justify-end gap-2">HDG: <span ref={hudYawRef} className="text-white text-base leading-none">000</span>°</div>
+                    <div className="flex justify-end gap-2 w-40"><span>CAM:</span> <span className="text-white">OPTICAL</span></div>
+                    <div className="flex justify-end gap-2 w-40"><span>REC:</span> <span className="text-red-500 animate-pulse">● REC</span></div>
+                </div>
+
+                <div className="absolute bottom-10 left-10 text-[#00ff41] font-mono text-xs border-l-2 border-[#00ff41] pl-3 drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">
+                    <div className="mb-1">POS: <span ref={hudCoordRef} className="text-white ml-2">X: 00.0 | Z: 00.0</span></div>
+                    <div>PITCH: <span ref={hudPitchRef} className="text-white ml-2">00.0</span>°</div>
+                </div>
+
+                <div className="absolute bottom-10 right-10 text-[#00ff41] font-mono text-xs border-r-2 border-[#00ff41] pr-3 text-right drop-shadow-[0_0_5px_rgba(0,255,65,0.8)]">
+                    <div className="tracking-widest opacity-80">ALTITUDE</div>
+                    <div className="text-3xl font-bold text-white mt-1"><span ref={hudAltRef}>0.00</span><span className="text-[#00ff41] text-sm ml-1">M</span></div>
+                    <div className="text-[10px] mt-2 text-red-500 animate-pulse border border-red-500/50 bg-red-500/10 px-2 py-1 inline-block">TERRAIN AVOIDANCE OFF</div>
+                </div>
+
+                <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-[#00ff41]/60" />
+                <div className="absolute top-6 right-6 w-12 h-12 border-t-2 border-r-2 border-[#00ff41]/60" />
+                <div className="absolute bottom-6 left-6 w-12 h-12 border-b-2 border-l-2 border-[#00ff41]/60" />
+                <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-[#00ff41]/60" />
+            </div>
+
             <Canvas camera={{ position: [20, 15, 20], fov: 50 }}>
                 <color attach="background" args={[bgColor]} />
                 <fog attach="fog" args={[bgColor, 15, 80]} />
@@ -608,16 +713,15 @@ export default function GitHubCity() {
                     {repos.map((repo, idx) => {
                         const x = (idx % cols) * spacing - offsetX;
                         const z = Math.floor(idx / cols) * spacing - offsetZ;
-                        return <Building key={repo.id} repo={repo} position={[x, 0, z]} languageCache={languageCache} setLanguageCache={setLanguageCache} audioEnabled={audioEnabled} easterEgg={easterEgg} />;
+                        return <Building key={repo.id} repo={repo} position={[x, 0, z]} languageCache={languageCache} setLanguageCache={setLanguageCache} audioEnabled={audioEnabled} easterEgg={easterEgg} handleTargetLock={handleTargetLock} />; // SİSTEM MİMARİSİ: Parametre buraya bağlandı
                     })}
                 </group>
 
-                {/* YENİ: Top Secret CV Kulesi */}
                 <TopSecretTower active={easterEgg} />
 
                 <DataTraffic />
 
-                <DroneController streetMode={streetMode} keysRef={keysRef} />
+                <DroneController streetMode={streetMode} keysRef={keysRef} hudRefs={{ alt: hudAltRef, coord: hudCoordRef, pitch: hudPitchRef, yaw: hudYawRef }} />
 
                 {!streetMode && (
                     <OrbitControls maxPolarAngle={Math.PI / 2 - 0.05} minDistance={5} maxDistance={60} enableDamping dampingFactor={0.05} />
