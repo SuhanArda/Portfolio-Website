@@ -30,7 +30,6 @@ export default function Hero() {
                         I am{" "}
 
                         <GradientText
-                            // Temaya göre renk dizisi değişir!
                             colors={
                                 hw
                                     ? ["#d97706", "#fbbf24", "#f59e0b"]  // Donanım (Sarı/Turuncu)
@@ -86,7 +85,6 @@ export default function Hero() {
                                 el.style.backgroundColor = hw ? "#fbbf24" : "#00ccff";
                                 el.style.borderColor = hw ? "#fbbf24" : "#00ccff";
                                 el.style.color = "#000";
-                                // Buna da hover durumunda hafif bir parlama ekledim, çok uyumlu duracak
                                 el.style.boxShadow = hw
                                     ? "0 0 20px rgba(251, 191, 36, 0.5)"
                                     : "0 0 20px rgba(0, 204, 255, 0.5)";
