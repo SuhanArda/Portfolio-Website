@@ -1,14 +1,30 @@
 "use client";
-import { motion } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 import GradientText from "./GradientText";
 
-
 export default function Hero() {
     const { theme } = useTheme();
     const hw = theme === "hardware";
+
+    const [isSimRunning, setIsSimRunning] = useState(false);
+    const [lambda, setLambda] = useState(4.2);
+    const [mu, setMu] = useState(5.0);
+    useEffect(() => {
+        if (!isSimRunning) return;
+        const interval = setInterval(() => {
+            setLambda(prev => Math.max(2.0, Math.min(4.8, prev + (Math.random() - 0.5) * 0.8)));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [isSimRunning]);
+
+    const rho = lambda / mu; // Sistem Kullanım Oranı (ρ)
+    const lq = (rho * rho) / (1 - rho); // Kuyruktaki ortalama iş (Lq)
+    const wq = lq / lambda; // Kuyrukta ortalama bekleme (Wq)
+    const p0 = 1 - rho; // Boş kalma olasılığı (P0)
 
     return (
         <section className="min-h-screen flex items-center justify-center pt-20 pb-12 px-6 sm:px-12 relative z-10">
@@ -149,7 +165,81 @@ export default function Hero() {
                             <Instagram size={20} />
                             Instagram
                         </a>
+                        <button
+                            onClick={() => setIsSimRunning(!isSimRunning)}
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border cursor-pointer"
+                            style={{
+                                backgroundColor: isSimRunning ? "rgba(0, 255, 65, 0.15)" : "transparent",
+                                borderColor: isSimRunning ? "#00ff41" : "rgba(255, 255, 255, 0.2)",
+                                color: isSimRunning ? "#00ff41" : "white",
+                                boxShadow: isSimRunning ? "0 0 20px rgba(0, 255, 65, 0.4)" : "none",
+                            }}
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "rgba(0, 255, 65, 0.15)";
+                                el.style.borderColor = "#00ff41";
+                                el.style.color = "#00ff41";
+                                el.style.boxShadow = "0 0 20px rgba(0, 255, 65, 0.4)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                if (!isSimRunning) {
+                                    el.style.backgroundColor = "transparent";
+                                    el.style.borderColor = "rgba(255, 255, 255, 0.2)";
+                                    el.style.color = "white";
+                                    el.style.boxShadow = "none";
+                                }
+                            }}
+                        >
+                            <Activity size={20} className={isSimRunning ? "animate-pulse" : ""} />
+                            {isSimRunning ? "SYS_SIM: ACTIVE" : "Run M/M/1 Test"}
+                        </button>
                     </div>
+                    <AnimatePresence>
+                        {isSimRunning && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0, y: -20 }}
+                                animate={{ opacity: 1, height: "auto", y: 0 }}
+                                exit={{ opacity: 0, height: 0, y: -20 }}
+                                transition={{ duration: 0.4, ease: "easeInOut" }}
+                                className="w-full mt-2 overflow-hidden"
+                            >
+                                <div className="bg-black/60 backdrop-blur-md border border-[#00ff41]/40 rounded-xl p-5 font-mono text-[#00ff41] shadow-[0_0_30px_rgba(0,255,65,0.15)]">
+                                    <div className="flex items-center gap-2 mb-3 border-b border-[#00ff41]/30 pb-2">
+                                        <Cpu className="w-4 h-4" />
+                                        <span className="text-xs font-bold tracking-widest">REAL-TIME M/M/1 QUEUE TELEMETRY</span>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        {/* Performans Barı */}
+                                        <div>
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span>Arrival (λ): {lambda.toFixed(2)} req/s</span>
+                                                <span>Service (μ): {mu.toFixed(2)} req/s</span>
+                                            </div>
+                                            <div className="w-full bg-gray-900 h-2 rounded overflow-hidden">
+                                                <div
+                                                    className={`h-full transition-all duration-300 ${rho > 0.85 ? 'bg-red-500' : 'bg-[#00ff41]'}`}
+                                                    style={{ width: `${Math.min(100, rho * 100)}%` }}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 mt-1">
+                                                Utilization (ρ = λ/μ): <span className={rho > 0.85 ? 'text-red-500' : 'text-[#00ff41]'}>{(rho * 100).toFixed(1)}%</span>
+                                            </p>
+                                        </div>
+
+                                        {/* Matematiksel Metrikler */}
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                                            <p className="text-gray-400">Queue (Lq): <span className="text-white block">{Math.max(0, lq).toFixed(2)} items</span></p>
+                                            <p className="text-gray-400">Wait (Wq): <span className="text-white block">{Math.max(0, wq).toFixed(3)} sec</span></p>
+                                            <p className="text-gray-400">Idle (P0): <span className="text-white block">{(Math.max(0, p0) * 100).toFixed(1)}%</span></p>
+                                            <p className="text-gray-400">Model: <span className="text-white block">Single-Server</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
 
                 {/* Image Area */}

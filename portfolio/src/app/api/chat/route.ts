@@ -7,10 +7,8 @@ export async function POST(req: Request) {
     try {
         const { message } = await req.json();
 
-        // En güncel ve hızlı model
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-        // SİSTEM MİMARİSİ: Tamamen İngilizce ve Uluslararası System Prompt
         const prompt = `
         You are the personal AI assistant on Suhan Arda Oner's portfolio website. Your purpose is to introduce Suhan to visitors (recruiters, engineers) in a professional, high-tech, and futuristic tone.
         
