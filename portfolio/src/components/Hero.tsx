@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 import GradientText from "./GradientText";
@@ -195,6 +195,7 @@ export default function Hero() {
                             {isSimRunning ? "SYS_SIM: ACTIVE" : "Run M/M/1 Test"}
                         </button>
                     </div>
+
                     <AnimatePresence>
                         {isSimRunning && (
                             <motion.div
@@ -202,9 +203,9 @@ export default function Hero() {
                                 animate={{ opacity: 1, height: "auto", y: 0 }}
                                 exit={{ opacity: 0, height: 0, y: -20 }}
                                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                                className="w-full mt-2 overflow-hidden"
+                                className="w-full mt-2 overflow-visible"
                             >
-                                <div className="bg-black/60 backdrop-blur-md border border-[#00ff41]/40 rounded-xl p-5 font-mono text-[#00ff41] shadow-[0_0_30px_rgba(0,255,65,0.15)]">
+                                <div className="bg-black/60 backdrop-blur-md border border-[#00ff41]/40 rounded-xl p-5 font-mono text-[#00ff41] shadow-[0_0_30px_rgba(0,255,65,0.15)] relative z-50">
                                     <div className="flex items-center gap-2 mb-3 border-b border-[#00ff41]/30 pb-2">
                                         <Cpu className="w-4 h-4" />
                                         <span className="text-xs font-bold tracking-widest">REAL-TIME M/M/1 QUEUE TELEMETRY</span>
@@ -214,26 +215,98 @@ export default function Hero() {
                                         {/* Performans Barı */}
                                         <div>
                                             <div className="flex justify-between text-xs mb-1">
-                                                <span>Arrival (λ): {lambda.toFixed(2)} req/s</span>
-                                                <span>Service (μ): {mu.toFixed(2)} req/s</span>
+                                                {/* Arrival Tooltip */}
+                                                <div className="relative group cursor-help flex items-center gap-1">
+                                                    <span>Arrival (λ):</span>
+                                                    <Info className="w-3 h-3 text-[#00ff41]/60 group-hover:text-[#00ff41]" />
+                                                    <span className="text-white ml-1">{lambda.toFixed(2)} req/s</span>
+                                                    <div className="absolute bottom-full left-0 mb-2 w-48 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed">
+                                                        <strong className="text-[#00ff41] block mb-1">Arrival Rate</strong>
+                                                        Incoming requests or data packets per second (e.g., customers entering a shop).
+                                                    </div>
+                                                </div>
+
+                                                {/* Service Tooltip */}
+                                                <div className="relative group cursor-help flex items-center gap-1">
+                                                    <span>Service (μ):</span>
+                                                    <Info className="w-3 h-3 text-[#00ff41]/60 group-hover:text-[#00ff41]" />
+                                                    <span className="text-white ml-1">{mu.toFixed(2)} req/s</span>
+                                                    <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed">
+                                                        <strong className="text-[#00ff41] block mb-1">Service Capacity</strong>
+                                                        Maximum tasks the processor can handle per second (e.g., a barista's speed).
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="w-full bg-gray-900 h-2 rounded overflow-hidden">
+
+                                            <div className="w-full bg-gray-900 h-2 rounded overflow-hidden mt-1">
                                                 <div
                                                     className={`h-full transition-all duration-300 ${rho > 0.85 ? 'bg-red-500' : 'bg-[#00ff41]'}`}
                                                     style={{ width: `${Math.min(100, rho * 100)}%` }}
                                                 />
                                             </div>
-                                            <p className="text-[10px] text-gray-400 mt-1">
-                                                Utilization (ρ = λ/μ): <span className={rho > 0.85 ? 'text-red-500' : 'text-[#00ff41]'}>{(rho * 100).toFixed(1)}%</span>
-                                            </p>
+
+                                            {/* Utilization Tooltip */}
+                                            <div className="relative group cursor-help flex items-center gap-1 mt-1 w-fit">
+                                                <p className="text-[10px] text-gray-400">Utilization (ρ = λ/μ):</p>
+                                                <Info className="w-3 h-3 text-gray-500 group-hover:text-[#00ff41]" />
+                                                <span className={`text-[10px] ml-1 ${rho > 0.85 ? 'text-red-500' : 'text-[#00ff41]'}`}>{(rho * 100).toFixed(1)}%</span>
+                                                <div className="absolute top-full left-0 mt-2 w-52 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed">
+                                                    <strong className="text-[#00ff41] block mb-1">System Stress Level</strong>
+                                                    Server workload percentage. If it reaches 100%, the system bottlenecks and fails.
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {/* Matematiksel Metrikler */}
-                                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                                            <p className="text-gray-400">Queue (Lq): <span className="text-white block">{Math.max(0, lq).toFixed(2)} items</span></p>
-                                            <p className="text-gray-400">Wait (Wq): <span className="text-white block">{Math.max(0, wq).toFixed(3)} sec</span></p>
-                                            <p className="text-gray-400">Idle (P0): <span className="text-white block">{(Math.max(0, p0) * 100).toFixed(1)}%</span></p>
-                                            <p className="text-gray-400">Model: <span className="text-white block">Single-Server</span></p>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
+                                            {/* Queue Tooltip */}
+                                            <div className="relative group cursor-help flex flex-col w-fit">
+                                                <div className="flex items-center gap-1">
+                                                    <p className="text-gray-400">Queue (Lq):</p>
+                                                    <Info className="w-3 h-3 text-gray-500 group-hover:text-[#00ff41]" />
+                                                </div>
+                                                <span className="text-white">{Math.max(0, lq).toFixed(2)} items</span>
+                                                <div className="absolute bottom-full left-0 mb-2 w-40 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                                                    Average number of packets waiting in line to be processed.
+                                                </div>
+                                            </div>
+
+                                            {/* Wait Tooltip */}
+                                            <div className="relative group cursor-help flex flex-col w-fit">
+                                                <div className="flex items-center gap-1">
+                                                    <p className="text-gray-400">Wait (Wq):</p>
+                                                    <Info className="w-3 h-3 text-gray-500 group-hover:text-[#00ff41]" />
+                                                </div>
+                                                <span className="text-white">{Math.max(0, wq).toFixed(3)} sec</span>
+                                                <div className="absolute bottom-full left-0 mb-2 w-44 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                                                    <strong className="text-[#00ff41] block mb-1">Latency</strong>
+                                                    Average time a request spends waiting in the queue before processing begins.
+                                                </div>
+                                            </div>
+
+                                            {/* Idle Tooltip */}
+                                            <div className="relative group cursor-help flex flex-col w-fit">
+                                                <div className="flex items-center gap-1">
+                                                    <p className="text-gray-400">Idle (P0):</p>
+                                                    <Info className="w-3 h-3 text-gray-500 group-hover:text-[#00ff41]" />
+                                                </div>
+                                                <span className="text-white">{(Math.max(0, p0) * 100).toFixed(1)}%</span>
+                                                <div className="absolute bottom-full left-0 mb-2 w-44 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                                                    Percentage of time the server remains completely idle without receiving any requests.
+                                                </div>
+                                            </div>
+
+                                            {/* Model Tooltip */}
+                                            <div className="relative group cursor-help flex flex-col w-fit">
+                                                <div className="flex items-center gap-1">
+                                                    <p className="text-gray-400">Model:</p>
+                                                    <Info className="w-3 h-3 text-gray-500 group-hover:text-[#00ff41]" />
+                                                </div>
+                                                <span className="text-white">Single-Server</span>
+                                                <div className="absolute bottom-full right-0 md:left-0 mb-2 w-44 p-2 bg-black/90 border border-[#00ff41]/50 text-gray-300 text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                                                    Indicates a single active server/processor handles the entire system load (M/M/1).
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
