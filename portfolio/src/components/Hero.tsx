@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info, Hand, Brain } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 import GradientText from "./GradientText";
@@ -67,12 +68,12 @@ export default function Hero() {
                         robotic environments.
                     </p>
 
-                    <div className="flex flex-wrap gap-4 mt-8">
+                    <div className="grid grid-cols-2 gap-4 mt-8 w-full max-w-xl">
                         <a
                             href="/cv.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
+                            className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
                                 el.style.backgroundColor = hw ? "#d97706" : "#ff3366";
@@ -95,7 +96,7 @@ export default function Hero() {
                         </a>
                         <a
                             href="/projects"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
+                            className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
                                 el.style.backgroundColor = hw ? "#fbbf24" : "#00ccff";
@@ -118,7 +119,7 @@ export default function Hero() {
                         </a>
                         <a
                             href="/github-city"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
+                            className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget;
                                 el.style.backgroundColor = "rgba(0, 255, 65, 0.15)";
@@ -137,12 +138,11 @@ export default function Hero() {
                             <Building2 size={20} />
                             My GitHub City
                         </a>
-
                         <a
                             href="https://github.com/SuhanArda"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 border border-white/20 text-white hover:bg-white/10 px-6 py-3 rounded-full font-medium transition-all"
+                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-white/10 px-6 py-3 rounded-full font-medium transition-all"
                         >
                             <Github size={20} />
                             GitHub
@@ -151,7 +151,7 @@ export default function Hero() {
                             href="https://www.linkedin.com/in/suhan-arda-öner/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 border border-white/20 text-white hover:bg-[#0A66C2] border-transparent hover:border-[#0A66C2] px-6 py-3 rounded-full font-medium transition-all"
+                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-[#0A66C2] border-transparent hover:border-[#0A66C2] px-6 py-3 rounded-full font-medium transition-all"
                         >
                             <Linkedin size={20} />
                             LinkedIn
@@ -160,14 +160,14 @@ export default function Hero() {
                             href="https://www.instagram.com/suhanarda/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 border border-white/20 text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] border-transparent hover:border-transparent px-6 py-3 rounded-full font-medium transition-all"
+                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] border-transparent hover:border-transparent px-6 py-3 rounded-full font-medium transition-all"
                         >
                             <Instagram size={20} />
                             Instagram
                         </a>
                         <button
                             onClick={() => setIsSimRunning(!isSimRunning)}
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-500 border cursor-pointer"
+                            className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border cursor-pointer"
                             style={{
                                 backgroundColor: isSimRunning ? "rgba(0, 255, 65, 0.15)" : "transparent",
                                 borderColor: isSimRunning ? "#00ff41" : "rgba(255, 255, 255, 0.2)",
@@ -194,6 +194,25 @@ export default function Hero() {
                             <Activity size={20} className={isSimRunning ? "animate-pulse" : ""} />
                             {isSimRunning ? "SYS_SIM: ACTIVE" : "Run M/M/1 Test"}
                         </button>
+                        <Link href="/neural-sphere" className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "rgba(251, 191, 36, 0.15)";
+                                el.style.borderColor = "#fbbf24";
+                                el.style.color = "#fbbf24";
+                                el.style.boxShadow = "0 0 20px rgba(251, 191, 36, 0.4)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "transparent";
+                                el.style.borderColor = "rgba(255, 255, 255, 0.2)";
+                                el.style.color = "white";
+                                el.style.boxShadow = "none";
+                            }}
+                        >
+                            <Brain size={20} />
+                            Init Neural Sphere
+                        </Link>
                     </div>
 
                     <AnimatePresence>
@@ -313,6 +332,8 @@ export default function Hero() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+
+
                 </motion.div>
 
                 {/* Image Area */}

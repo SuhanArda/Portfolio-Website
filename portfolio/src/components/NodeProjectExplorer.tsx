@@ -277,7 +277,7 @@ export default function NodeProjectExplorer() {
     };
     animate();
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, []); // Empty dependency array since setAnimationTick is stable
 
   useEffect(() => {
     const updateDimensions = () => {
