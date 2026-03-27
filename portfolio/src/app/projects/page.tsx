@@ -66,6 +66,13 @@ const detailedProjects = [
         techStack: ["Simulink", "MATLAB", "Verilog"],
         description: "A comprehensive digital memory architecture project developed using Simulink, MATLAB, and Verilog. This project demonstrates expertise in digital logic design, memory system modeling, and hardware description languages, showcasing a deep understanding of computer architecture principles.",
         githubUrl: "https://github.com/SuhanArda/Digital-Memory-Architecture"
+    },
+    {
+        id: 9,
+        title: "github-city",
+        techStack: ["Three.js", "React", "JavaScript"],
+        description: "A 3D interactive city visualization of GitHub repositories. This project demonstrates expertise in Three.js, React, and JavaScript, showcasing a deep understanding of 3D graphics and interactive web development.",
+        githubUrl: "https://github.com/SuhanArda/github-city"
     }
 ];
 

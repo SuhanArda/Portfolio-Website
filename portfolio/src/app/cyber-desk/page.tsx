@@ -227,6 +227,36 @@ function NotebookModel({ hovered }: { hovered?: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   IPHONE GLB MODEL — /models/iphone.glb (between notebook and PCB)
+   ═══════════════════════════════════════════════════════════════════════════ */
+function IPhoneGLB({ hovered }: { hovered?: boolean }) {
+    const { scene } = useGLTF("/models/iphone.glb");
+    const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+    useFrame(() => {
+        clonedScene.traverse((child) => {
+            if ((child as THREE.Mesh).isMesh) {
+                const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
+                if (mat && mat.emissive) {
+                    mat.emissiveIntensity = THREE.MathUtils.lerp(
+                        mat.emissiveIntensity, hovered ? 0.35 : 0, 0.08
+                    );
+                    if (hovered) mat.emissive.set("#00ffcc");
+                }
+            }
+        });
+    });
+
+    return (
+        <group>
+            <primitive object={clonedScene} scale={0.01} position={[0, 0.1, -0.5]} rotation={[-1.5, 0, 0]} castShadow receiveShadow />
+        </group>
+    );
+}
+
+useGLTF.preload("/models/iphone.glb");
+
+/* ═══════════════════════════════════════════════════════════════════════════
    PCB GLB MODEL — /models/pcb.glb (right side)
    ═══════════════════════════════════════════════════════════════════════════ */
 function PcbModel({ hovered }: { hovered?: boolean }) {
@@ -358,12 +388,12 @@ function Scene() {
     return (
         <>
             {/* ── Lighting (tuned for GLB model textures) ── */}
-            <ambientLight intensity={1.2} color="#eaeeff" />
+            <ambientLight intensity={1.3} color="#eaeeff" />
             <spotLight
                 position={[0, 6, 0]}
                 angle={0.6}
                 penumbra={0.4}
-                intensity={2.5}
+                intensity={2.8}
                 color="#00ffcc"
                 castShadow
                 shadow-mapSize-width={1024}
@@ -413,6 +443,18 @@ function Scene() {
                 onAction={() => window.open("/cv.pdf", "_blank")}
             >
                 <NotebookModel />
+            </InteractiveObject>
+
+            {/* ── iPhone (Center-Right) ── */}
+            <InteractiveObject
+                position={[1.3, 0.01, 0.1]}
+                tooltipText="LINKEDIN"
+                tooltipOffset={[0, 0.8, 0]}
+                onAction={() => window.open("https://linkedin.com/in/suhan-arda-öner", "_blank")}
+            >
+                <Suspense fallback={null}>
+                    <IPhoneGLB />
+                </Suspense>
             </InteractiveObject>
 
             {/* ── PCB Board (Right side) ── */}
