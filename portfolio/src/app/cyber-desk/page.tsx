@@ -2,7 +2,7 @@
 
 import React, { Suspense, useRef, useState, useCallback, useMemo, useEffect } from "react";
 import { Canvas, useFrame, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Text, RoundedBox, useGLTF, Float, Html, ContactShadows } from "@react-three/drei";
+import { OrbitControls, Text, RoundedBox, useGLTF, Float, Html, ContactShadows, Stars, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -249,7 +249,7 @@ function IPhoneGLB({ hovered }: { hovered?: boolean }) {
 
     return (
         <group>
-            <primitive object={clonedScene} scale={0.01} position={[0, 0.1, -0.5]} rotation={[-1.5, 0, 0]} castShadow receiveShadow />
+            <primitive object={clonedScene} scale={0.007} position={[0, 0.1, -0.5]} rotation={[-1.5, 0, 0]} castShadow receiveShadow />
         </group>
     );
 }
@@ -354,15 +354,45 @@ class DeskErrorBoundary extends React.Component<
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   FLOOR — grid plane with neon lines
+   LIGHTNING STORM — dramatic directional flashes from the distant sky
    ═══════════════════════════════════════════════════════════════════════════ */
-function Floor() {
+function LightningStorm() {
+    const lightRef = useRef<THREE.DirectionalLight>(null);
+    const flashColor = useRef(new THREE.Color("#00e6ff"));
+
+    useFrame(() => {
+        if (!lightRef.current) return;
+        if (Math.random() > 0.988) {
+            flashColor.current.set(Math.random() > 0.5 ? "#a855f7" : "#00e6ff");
+            lightRef.current.color.copy(flashColor.current);
+            lightRef.current.intensity = 4 + Math.random() * 6;
+        } else {
+            lightRef.current.intensity = THREE.MathUtils.lerp(lightRef.current.intensity, 0, 0.12);
+        }
+    });
+
+    return (
+        <directionalLight
+            ref={lightRef}
+            position={[0, 30, -50]}
+            intensity={0}
+        />
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PENTHOUSE ROOM — structural pillars, ceiling, floor (NO glass pane)
+   ═══════════════════════════════════════════════════════════════════════════ */
+function PenthouseRoom() {
     return (
         <group>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.75, 0]}>
-                <planeGeometry args={[20, 20]} />
-                <meshStandardMaterial color="#0e0e12" roughness={0.9} />
+            {/* ── Floor (dark polished concrete) ── */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.75, 0]} receiveShadow>
+                <planeGeometry args={[16, 16]} />
+                <meshStandardMaterial color="#080810" roughness={0.5} metalness={0.35} />
             </mesh>
+
+            {/* ── Neon grid lines on the floor ── */}
             {Array.from({ length: 21 }, (_, i) => i - 10).map((offset) => (
                 <React.Fragment key={offset}>
                     <mesh position={[offset, -1.749, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -375,7 +405,206 @@ function Floor() {
                     </mesh>
                 </React.Fragment>
             ))}
+
+            {/* ── Ceiling ── */}
+            <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 6, -2]}>
+                <planeGeometry args={[16, 16]} />
+                <meshStandardMaterial color="#050508" roughness={0.95} metalness={0.1} />
+            </mesh>
+
+            {/* ── Left pillar ── */}
+            <mesh position={[-6.5, 2.1, -3]}>
+                <boxGeometry args={[0.6, 8, 0.6]} />
+                <meshStandardMaterial color="#111118" roughness={0.25} metalness={0.95} />
+            </mesh>
+            <mesh position={[-6.2, 2.1, -2.69]}>
+                <boxGeometry args={[0.02, 8, 0.02]} />
+                <meshBasicMaterial color="#00ffcc" toneMapped={false} />
+            </mesh>
+
+            {/* ── Right pillar ── */}
+            <mesh position={[6.5, 2.1, -3]}>
+                <boxGeometry args={[0.6, 8, 0.6]} />
+                <meshStandardMaterial color="#111118" roughness={0.25} metalness={0.95} />
+            </mesh>
+            <mesh position={[6.2, 2.1, -2.69]}>
+                <boxGeometry args={[0.02, 8, 0.02]} />
+                <meshBasicMaterial color="#ff0066" toneMapped={false} />
+            </mesh>
+
+            {/* ── Additional center pillars for depth ── */}
+            <mesh position={[-3, 2.1, -4.8]}>
+                <boxGeometry args={[0.15, 8, 0.15]} />
+                <meshStandardMaterial color="#111118" roughness={0.25} metalness={0.95} />
+            </mesh>
+            <mesh position={[3, 2.1, -4.8]}>
+                <boxGeometry args={[0.15, 8, 0.15]} />
+                <meshStandardMaterial color="#111118" roughness={0.25} metalness={0.95} />
+            </mesh>
+
+            {/* ── Side walls (left) ── */}
+            <mesh position={[-7, 2.1, 2]} rotation={[0, Math.PI / 2, 0]}>
+                <planeGeometry args={[14, 8]} />
+                <meshStandardMaterial color="#08080c" roughness={0.8} metalness={0.4} side={THREE.DoubleSide} />
+            </mesh>
+
+            {/* ── Side walls (right) ── */}
+            <mesh position={[7, 2.1, 2]} rotation={[0, -Math.PI / 2, 0]}>
+                <planeGeometry args={[14, 8]} />
+                <meshStandardMaterial color="#08080c" roughness={0.8} metalness={0.4} side={THREE.DoubleSide} />
+            </mesh>
+
+            {/* ── Window frame (top beam) ── */}
+            <mesh position={[0, 6.1, -5]}>
+                <boxGeometry args={[14, 0.2, 0.15]} />
+                <meshStandardMaterial color="#1a1a22" roughness={0.2} metalness={0.9} />
+            </mesh>
+            <mesh position={[0, 6.2, -4.92]}>
+                <boxGeometry args={[13.6, 0.04, 0.02]} />
+                <meshBasicMaterial color="#00ffcc" toneMapped={false} />
+            </mesh>
+
+            {/* ── Window frame (bottom sill) ── */}
+            <mesh position={[0, -1.75, -5]}>
+                <boxGeometry args={[14, 0.3, 0.2]} />
+                <meshStandardMaterial color="#1a1a22" roughness={0.2} metalness={0.9} />
+            </mesh>
+
+            {/* ── Window vertical dividers (thin structural bars) ── */}
+            {[-6.5, -3, 0, 3, 6.5].map((x, i) => (
+                <mesh key={`wd-${i}`} position={[x, 2.1, -4.97]}>
+                    <boxGeometry args={[0.06, 8, 0.06]} />
+                    <meshStandardMaterial color="#1a1a22" roughness={0.3} metalness={0.9} />
+                </mesh>
+            ))}
+
+            {/* ── Ceiling neon strip accents ── */}
+            <mesh position={[-3, 5.98, 0]}>
+                <boxGeometry args={[0.03, 0.03, 10]} />
+                <meshBasicMaterial color="#00ffcc" transparent opacity={0.6} toneMapped={false} />
+            </mesh>
+            <mesh position={[3, 5.98, 0]}>
+                <boxGeometry args={[0.03, 0.03, 10]} />
+                <meshBasicMaterial color="#ff0066" transparent opacity={0.6} toneMapped={false} />
+            </mesh>
         </group>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FAR-OFF BUILDINGS — 3D depth beyond the HDRI background
+   ═══════════════════════════════════════════════════════════════════════════ */
+const FAR_BUILDINGS = Array.from({ length: 30 }, (_, i) => {
+    const angle = (i / 30) * Math.PI * 1.2 - Math.PI * 0.6; // spread across back
+    const dist = 25 + Math.abs(Math.sin(i * 3.7)) * 30;
+    return {
+        x: Math.sin(angle) * dist,
+        z: -15 - Math.cos(angle) * dist * 0.6,
+        height: 40 + Math.abs(Math.sin(i * 2.3)) * 60,
+        width: 2 + Math.abs(Math.cos(i * 4.1)) * 5,
+        depth: 2 + Math.abs(Math.sin(i * 5.7)) * 5,
+        neon: ["#00ffcc", "#ff0066", "#a855f7", "#00e6ff", "#ffb300", "#00ff41"][i % 6],
+        winRows: 8 + Math.floor(Math.abs(Math.sin(i * 1.3)) * 16),
+    };
+});
+
+function FarOffBuildings() {
+    return (
+        <group>
+            {FAR_BUILDINGS.map((b, i) => (
+                <group key={`fb-${i}`} position={[b.x, b.height / 2 - 30, b.z]}>
+                    {/* Dark building body */}
+                    <mesh>
+                        <boxGeometry args={[b.width, b.height, b.depth]} />
+                        <meshStandardMaterial color="#060609" roughness={0.8} metalness={0.7} />
+                    </mesh>
+
+                    {/* Faint wireframe */}
+                    <mesh>
+                        <boxGeometry args={[b.width * 1.003, b.height * 1.003, b.depth * 1.003]} />
+                        <meshBasicMaterial color={b.neon} wireframe transparent opacity={0.04} />
+                    </mesh>
+
+                    {/* Neon crown */}
+                    <mesh position={[0, b.height / 2 - 0.05, 0]}>
+                        <boxGeometry args={[b.width + 0.15, 0.08, b.depth + 0.15]} />
+                        <meshBasicMaterial color={b.neon} transparent opacity={0.85} toneMapped={false} />
+                    </mesh>
+
+                    {/* Scattered window rows — emissive planes on front face */}
+                    {Array.from({ length: b.winRows }, (_, r) => {
+                        const wy = -b.height / 2 + (r + 1) * (b.height / (b.winRows + 1));
+                        // Randomly vary window strip width for realism
+                        const wWidth = b.width * (0.3 + Math.abs(Math.sin(i * 3 + r * 2)) * 0.5);
+                        return (
+                            <mesh key={`fw-${i}-${r}`} position={[0, wy, b.depth / 2 + 0.02]}>
+                                <planeGeometry args={[wWidth, 0.15]} />
+                                <meshBasicMaterial
+                                    color={r % 4 === 0 ? "#00ffcc" : r % 4 === 1 ? "#ff0066" : r % 4 === 2 ? "#a855f7" : "#ffb300"}
+                                    transparent
+                                    opacity={0.15 + Math.abs(Math.sin(i + r)) * 0.45}
+                                    toneMapped={false}
+                                />
+                            </mesh>
+                        );
+                    })}
+
+                    {/* Side neon strip */}
+                    <mesh position={[b.width / 2 + 0.02, 0, 0]}>
+                        <planeGeometry args={[0.06, b.height * 0.7]} />
+                        <meshBasicMaterial color={b.neon} transparent opacity={0.4} toneMapped={false} />
+                    </mesh>
+                </group>
+            ))}
+        </group>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RAIN PARTICLES — subtle vertical streaks outside the window
+   ═══════════════════════════════════════════════════════════════════════════ */
+function RainEffect() {
+    const rainRef = useRef<THREE.Points>(null);
+    const count = 1200;
+
+    const positions = useMemo(() => {
+        const arr = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            arr[i * 3]     = (Math.random() - 0.5) * 40;
+            arr[i * 3 + 1] = Math.random() * 25 - 2;
+            arr[i * 3 + 2] = -6 - Math.random() * 45;
+        }
+        return arr;
+    }, []);
+
+    useFrame(() => {
+        if (!rainRef.current) return;
+        const pos = rainRef.current.geometry.attributes.position;
+        for (let i = 0; i < count; i++) {
+            let y = (pos as THREE.BufferAttribute).getY(i);
+            y -= 0.18;
+            if (y < -3) y = 22;
+            (pos as THREE.BufferAttribute).setY(i, y);
+        }
+        pos.needsUpdate = true;
+    });
+
+    const geom = useMemo(() => {
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        return g;
+    }, [positions]);
+
+    return (
+        <points ref={rainRef} geometry={geom}>
+            <pointsMaterial
+                color="#6699cc"
+                size={0.035}
+                transparent
+                opacity={0.35}
+                sizeAttenuation
+            />
+        </points>
     );
 }
 
@@ -387,25 +616,45 @@ function Scene() {
 
     return (
         <>
-            {/* ── Lighting (tuned for GLB model textures) ── */}
-            <ambientLight intensity={1.3} color="#eaeeff" />
+            {/* ── 360° Environment (HDRI preset background) ── */}
+            <Environment preset="night" background backgroundBlurriness={0.6} />
+            <fog attach="fog" args={["#020208", 10, 60]} />
+            <Stars radius={80} depth={50} count={4000} factor={3} saturation={0.2} fade speed={0.8} />
+
+            {/* ── Storm & Rain ── */}
+            <LightningStorm />
+            <RainEffect />
+
+            {/* ── Penthouse Interior (open window — no glass) ── */}
+            <PenthouseRoom />
+
+            {/* ── Far-off 3D Buildings for depth ── */}
+            <FarOffBuildings />
+
+            {/* ── Core Lighting (reduced ambient for moody cyberpunk) ── */}
+            <ambientLight intensity={0.8} color="#c8d0ff" />
             <spotLight
-                position={[0, 6, 0]}
-                angle={0.6}
-                penumbra={0.4}
-                intensity={2.8}
-                color="#00ffcc"
+                position={[0, 5.8, 1]}
+                angle={0.65}
+                penumbra={0.5}
+                intensity={2.2}
+                color="#eef8ff"
                 castShadow
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
             />
-            <pointLight position={[-3, 4, 3]} intensity={0.8} color="#ffffff" />
-            <pointLight position={[3, 3, -2]} intensity={0.5} color="#3366ff" />
-            <pointLight position={[0, 2, 4]} intensity={0.6} color="#ff6600" />
-            <pointLight position={[0, 3, 5]} intensity={0.7} color="#ffffff" />
+            <pointLight position={[-3, 4, 3]} intensity={0.6} color="#ffffff" />
+            <pointLight position={[3, 3, -2]} intensity={0.4} color="#3366ff" />
+            <pointLight position={[0, 2, 4]} intensity={0.5} color="#ff6600" />
 
-            {/* ── Floor ── */}
-            <Floor />
+            {/* ── City neon reflections on desk surfaces ── */}
+            <pointLight position={[-5, 1, -4]} intensity={0.6} distance={12} color="#00ffcc" />
+            <pointLight position={[5, 1, -4]} intensity={0.6} distance={12} color="#ff0066" />
+            <pointLight position={[0, 0.5, -5]} intensity={0.4} distance={10} color="#a855f7" />
+            <pointLight position={[-6, 4, -3]} intensity={0.35} distance={10} color="#00e6ff" />
+            <pointLight position={[6, 4, -3]} intensity={0.35} distance={10} color="#ff0066" />
+
+
 
             {/* ── Desk (remote GLTF with primitive fallback) ── */}
             <DeskErrorBoundary fallback={<DeskFallback />}>

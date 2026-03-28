@@ -138,33 +138,7 @@ export default function Hero() {
                             <Building2 size={20} />
                             My GitHub City
                         </a>
-                        <a
-                            href="https://github.com/SuhanArda"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-white/10 px-6 py-3 rounded-full font-medium transition-all"
-                        >
-                            <Github size={20} />
-                            GitHub
-                        </a>
-                        <a
-                            href="https://www.linkedin.com/in/suhan-arda-öner/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-[#0A66C2] border-transparent hover:border-[#0A66C2] px-6 py-3 rounded-full font-medium transition-all"
-                        >
-                            <Linkedin size={20} />
-                            LinkedIn
-                        </a>
-                        <a
-                            href="https://www.instagram.com/suhanarda/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 w-full justify-center text-center border border-white/20 text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] border-transparent hover:border-transparent px-6 py-3 rounded-full font-medium transition-all"
-                        >
-                            <Instagram size={20} />
-                            Instagram
-                        </a>
+
                         <button
                             onClick={() => setIsSimRunning(!isSimRunning)}
                             className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border cursor-pointer"
@@ -360,9 +334,41 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="flex justify-center lg:justify-end"
+                    className="flex flex-col items-center lg:items-end justify-center gap-8 mt-12 lg:mt-0"
                 >
                     <ProfileFlipCard />
+                    
+                    {/* Social Buttons */}
+                    <div className="flex items-center justify-center gap-6 w-72 sm:w-96">
+                        <a
+                            href="https://github.com/SuhanArda"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-14 h-14 rounded-full border border-white/20 text-white hover:bg-white/10 transition-all hover:scale-110 shadow-lg hover:shadow-white/20"
+                            aria-label="GitHub"
+                        >
+                            <Github size={24} />
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/suhan-arda-öner/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-14 h-14 rounded-full border border-white/20 text-white hover:bg-[#0A66C2] hover:border-[#0A66C2] transition-all hover:scale-110 shadow-lg hover:shadow-[#0A66C2]/40"
+                            aria-label="LinkedIn"
+                        >
+                            <Linkedin size={24} />
+                        </a>
+                        <a
+                            href="https://www.instagram.com/suhanarda/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-14 h-14 rounded-full border border-white/20 text-white hover:border-transparent transition-all hover:scale-110 relative overflow-hidden group shadow-lg hover:shadow-[#dc2743]/40"
+                            aria-label="Instagram"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <Instagram size={24} className="relative z-10" />
+                        </a>
+                    </div>
                 </motion.div>
             </div>
         </section>
