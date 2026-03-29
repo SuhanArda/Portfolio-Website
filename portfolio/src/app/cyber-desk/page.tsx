@@ -2,7 +2,7 @@
 
 import React, { Suspense, useRef, useState, useCallback, useMemo, useEffect } from "react";
 import { Canvas, useFrame, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Text, RoundedBox, useGLTF, Float, Html, ContactShadows, Stars, Environment } from "@react-three/drei";
+import { OrbitControls, Text, RoundedBox, useGLTF, Float, Html, ContactShadows, Stars, Environment, useProgress } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,28 +10,104 @@ import { ArrowLeft } from "lucide-react";
 import * as THREE from "three";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LOADING SCREEN — spinner while GLB assets are fetched
+   CYBER BOOT LOADER — full-screen HTML overlay hiding canvas until ready
    ═══════════════════════════════════════════════════════════════════════════ */
-function SceneLoader() {
+function CyberBootLoader() {
+    const { active, progress } = useProgress();
+    const [visible, setVisible] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
+
+    useEffect(() => {
+        if (progress >= 100 && !active) {
+            const t1 = setTimeout(() => setFadeOut(true), 400);
+            const t2 = setTimeout(() => setVisible(false), 1200);
+            return () => { clearTimeout(t1); clearTimeout(t2); };
+        }
+    }, [progress, active]);
+
+    if (!visible) return null;
+
     return (
-        <Html center>
+        <div
+            style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 100,
+                background: "#05050a",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: "'Courier New', Courier, monospace",
+                transition: "opacity 0.8s ease-out",
+                opacity: fadeOut ? 0 : 1,
+                pointerEvents: fadeOut ? "none" : "auto",
+            }}
+        >
+            {/* Animated spinner ring */}
             <div style={{
-                display: "flex", flexDirection: "column", alignItems: "center",
-                gap: "16px", fontFamily: "monospace", color: "#00ffcc",
+                width: 64, height: 64,
+                borderRadius: "50%",
+                border: "3px solid rgba(0, 255, 204, 0.08)",
+                borderTopColor: "#00ffcc",
+                borderRightColor: "rgba(0, 255, 204, 0.3)",
+                animation: "cyberSpin 1s linear infinite",
+                boxShadow: "0 0 24px rgba(0, 255, 204, 0.25), inset 0 0 12px rgba(0, 255, 204, 0.08)",
+                marginBottom: 32,
+            }} />
+
+            {/* Progress bar track */}
+            <div style={{
+                width: 260, height: 3,
+                background: "rgba(0, 255, 204, 0.06)",
+                borderRadius: 2,
+                overflow: "hidden",
+                marginBottom: 24,
+                border: "1px solid rgba(0, 255, 204, 0.1)",
             }}>
                 <div style={{
-                    width: "48px", height: "48px",
-                    border: "3px solid rgba(0,255,204,0.15)",
-                    borderTop: "3px solid #00ffcc",
-                    borderRadius: "50%",
-                    animation: "spin 1s linear infinite",
+                    width: `${progress}%`,
+                    height: "100%",
+                    background: "linear-gradient(90deg, #00ffcc, #00e6ff)",
+                    borderRadius: 2,
+                    transition: "width 0.3s ease-out",
+                    boxShadow: "0 0 12px rgba(0, 255, 204, 0.5)",
                 }} />
-                <span style={{ fontSize: "12px", letterSpacing: "0.15em", opacity: 0.7 }}>
-                    LOADING_ASSETS...
-                </span>
-                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
-        </Html>
+
+            {/* Terminal text lines */}
+            <p style={{
+                color: "rgba(0, 255, 204, 0.35)",
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                marginBottom: 8,
+                textTransform: "uppercase",
+            }}>
+                {">"}  INITIATING_SYSTEM_BOOT...
+            </p>
+            <p style={{
+                color: "#00ffcc",
+                fontSize: 13,
+                letterSpacing: "0.15em",
+                fontWeight: 600,
+                textShadow: "0 0 8px rgba(0, 255, 204, 0.5)",
+            }}>
+                {">"}  LOADING_ASSETS: {progress.toFixed(0)}%
+            </p>
+
+            {/* Scanline overlay */}
+            <div style={{
+                position: "absolute", inset: 0,
+                background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 204, 0.015) 2px, rgba(0, 255, 204, 0.015) 4px)",
+                pointerEvents: "none",
+            }} />
+
+            <style>{`
+                @keyframes cyberSpin {
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
+        </div>
     );
 }
 
@@ -679,9 +755,7 @@ function Scene() {
                 tooltipOffset={[0, 0.9, 0]}
                 onAction={() => window.open("https://github.com/SuhanArda", "_blank")}
             >
-                <Suspense fallback={null}>
-                    <MacBookGLB />
-                </Suspense>
+                <MacBookGLB />
             </InteractiveObject>
 
             {/* ── Primitive Notebook (Center) ── */}
@@ -699,11 +773,9 @@ function Scene() {
                 position={[1.3, 0.01, 0.1]}
                 tooltipText="LINKEDIN"
                 tooltipOffset={[0, 0.8, 0]}
-                onAction={() => window.open("https://linkedin.com/in/suhan-arda-öner", "_blank")}
+                onAction={() => window.open("https://linkedin.com/in/suhan-arda-\u00f6ner", "_blank")}
             >
-                <Suspense fallback={null}>
-                    <IPhoneGLB />
-                </Suspense>
+                <IPhoneGLB />
             </InteractiveObject>
 
             {/* ── PCB Board (Right side) ── */}
@@ -713,9 +785,7 @@ function Scene() {
                 tooltipOffset={[0, 0.8, 0]}
                 onAction={() => router.push("/projects")}
             >
-                <Suspense fallback={null}>
-                    <PcbModel />
-                </Suspense>
+                <PcbModel />
             </InteractiveObject>
 
             {/* ── Camera Controls ── */}
@@ -762,12 +832,16 @@ export default function CyberDeskPage() {
     return (
         <div className="h-screen w-screen relative bg-[#0a0a0f] text-white overflow-hidden">
             {/* ═══ R3F Canvas ═══ */}
+            {/* ═══ Cyber Boot Loader (HTML overlay — sibling of Canvas) ═══ */}
+            <CyberBootLoader />
+
+            {/* ═══ R3F Canvas ═══ */}
             <Canvas
                 camera={{ position: [0, 3, 5], fov: 50 }}
                 gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
                 style={{ position: "absolute", inset: 0 }}
             >
-                <Suspense fallback={<SceneLoader />}>
+                <Suspense fallback={null}>
                     <Scene />
                 </Suspense>
             </Canvas>
