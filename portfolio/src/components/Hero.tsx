@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info, Hand, Brain, Monitor } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info, Hand, Brain, Monitor, Rocket } from "lucide-react";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 import GradientText from "./GradientText";
@@ -205,6 +205,25 @@ export default function Hero() {
                         >
                             <Monitor size={20} />
                             Explore Workspace
+                        </Link>
+                        <Link href="/missile-sim" className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white"
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "rgba(255, 69, 0, 0.15)";
+                                el.style.borderColor = "#ff4500";
+                                el.style.color = "#ff4500";
+                                el.style.boxShadow = "0 0 20px rgba(255, 69, 0, 0.4)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "transparent";
+                                el.style.borderColor = "rgba(255, 255, 255, 0.2)";
+                                el.style.color = "white";
+                                el.style.boxShadow = "none";
+                            }}
+                        >
+                            <Rocket size={20} />
+                            Launch Missile Sim
                         </Link>
                     </div>
 
