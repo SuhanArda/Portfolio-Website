@@ -151,9 +151,9 @@ export default function FloatingAICore() {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
 
-            <div className={`mb-4 w-80 sm:w-96 bg-black/60 backdrop-blur-xl border ${borderColor} rounded-2xl ${shadowColor} overflow-hidden transition-all duration-500 origin-bottom-right ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-0 pointer-events-none"}`}>
+            <div className={`mb-4 w-80 sm:w-96 bg-black/60 backdrop-blur-xl border ${borderColor} rounded-2xl ${shadowColor} overflow-hidden transition-all duration-500 origin-bottom-right ${isOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-0"}`}>
 
                 <div className={`${bgColor} px-4 py-3 flex items-center justify-between border-b ${borderColor}`}>
                     <div className={`flex items-center gap-2 ${textColor} font-mono text-xs font-bold tracking-widest`}>
@@ -206,7 +206,7 @@ export default function FloatingAICore() {
             </div>
 
             <div
-                className="w-24 h-24 sm:w-32 sm:h-32 cursor-pointer relative hover:scale-105 transition-transform duration-300"
+                className="w-24 h-24 sm:w-32 sm:h-32 cursor-pointer relative hover:scale-105 transition-transform duration-300 pointer-events-auto"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => setIsOpen(!isOpen)}

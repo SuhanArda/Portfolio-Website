@@ -369,7 +369,7 @@ export default function Hero() {
                             <Github size={24} />
                         </a>
                         <a
-                            href="https://www.linkedin.com/in/suhan-arda-öner/"
+                            href="https://www.linkedin.com/in/suhan-arda-%C3%B6ner/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center w-14 h-14 rounded-full border border-white/20 text-white hover:bg-[#0A66C2] hover:border-[#0A66C2] transition-all hover:scale-110 shadow-lg hover:shadow-[#0A66C2]/40"

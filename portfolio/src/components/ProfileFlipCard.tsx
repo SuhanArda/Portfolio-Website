@@ -31,7 +31,7 @@ export default function ProfileFlipCard() {
             >
                 {/* Glowing Background that follows mouse */}
                 <motion.div
-                    className="absolute inset-0 bg-gradient-to-tr from-[#ff3366] to-[#00ccff] rounded-full blur-2xl opacity-40 transition-transform duration-200 ease-out"
+                    className="absolute inset-0 bg-gradient-to-tr from-[#ff3366] to-[#00ccff] rounded-full blur-2xl opacity-40 transition-transform duration-200 ease-out pointer-events-none"
                     style={{
                         transform: 'translate(calc(var(--mouse-x) * 0.2), calc(var(--mouse-y) * 0.2)) scale(1.1)',
                     }}
