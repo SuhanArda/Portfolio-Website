@@ -60,7 +60,7 @@ export default function CustomCursor() {
         <>
             {/* Center sharp dot */}
             <motion.div
-                className="fixed top-0 left-0 w-[6px] h-[6px] rounded-full pointer-events-none z-[9999] transition-colors duration-500"
+                className="fixed top-0 left-0 w-[6px] h-[6px] rounded-full pointer-events-none z-[10001] transition-colors duration-500"
                 style={{
                     backgroundColor: dotColor,
                     x: cursorX,
@@ -72,7 +72,7 @@ export default function CustomCursor() {
 
             {/* Outer rotating circle with spring delay */}
             <motion.div
-                className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[9998]"
+                className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[10000]"
                 style={{
                     x: smoothX,
                     y: smoothY,

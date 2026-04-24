@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info, Hand, Brain, Monitor, Rocket } from "lucide-react";
+import { FileText, ArrowRight, Github, Linkedin, Instagram, Building2, Activity, Cpu, Info, Brain, Monitor, Rocket, FlaskConical } from "lucide-react";
+import AlgorithmsPanel from "./AlgorithmsPanel";
 import ProfileFlipCard from "./ProfileFlipCard";
 import { useTheme } from "@/context/ThemeContext";
 import GradientText from "./GradientText";
@@ -12,6 +14,7 @@ export default function Hero() {
     const hw = theme === "hardware";
 
     const [isSimRunning, setIsSimRunning] = useState(false);
+    const [isAlgoPanelOpen, setIsAlgoPanelOpen] = useState(false);
     const [lambda, setLambda] = useState(4.2);
     const [mu, setMu] = useState(5.0);
     useEffect(() => {
@@ -225,6 +228,27 @@ export default function Hero() {
                             <Rocket size={20} />
                             Launch Missile Sim
                         </Link>
+                        <button
+                            onClick={() => setIsAlgoPanelOpen(true)}
+                            className="flex items-center gap-2 w-full justify-center text-center px-6 py-3 rounded-full font-medium transition-all duration-500 border border-white/20 text-white cursor-pointer"
+                            onMouseEnter={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "rgba(99, 102, 241, 0.15)";
+                                el.style.borderColor = "#818cf8";
+                                el.style.color = "#a5b4fc";
+                                el.style.boxShadow = "0 0 25px rgba(99, 102, 241, 0.4)";
+                            }}
+                            onMouseLeave={(e) => {
+                                const el = e.currentTarget;
+                                el.style.backgroundColor = "";
+                                el.style.borderColor = "";
+                                el.style.color = "";
+                                el.style.boxShadow = "";
+                            }}
+                        >
+                            <FlaskConical size={20} />
+                            Algorithms Lab
+                        </button>
                     </div>
 
                     <AnimatePresence>
@@ -390,6 +414,11 @@ export default function Hero() {
                     </div>
                 </motion.div>
             </div>
+
+            {typeof document !== "undefined" && createPortal(
+                <AlgorithmsPanel isOpen={isAlgoPanelOpen} onClose={() => setIsAlgoPanelOpen(false)} />,
+                document.body
+            )}
         </section>
     );
 }
