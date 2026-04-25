@@ -36,7 +36,7 @@ export default function HandTrackingBridge({
 
     // ── Scene Normalization ──────────────────────────────────────────────
     const normalizeToScene = (x: number, y: number) => ({
-        x: (x - 0.5) * 8,
+        x: (0.5 - x) * 8,
         y: -(y - 0.5) * 6,
     });
 
@@ -229,7 +229,7 @@ export default function HandTrackingBridge({
                 width={1280}
                 height={720}
                 className="absolute inset-0 w-full h-full pointer-events-none"
-                style={{ mixBlendMode: "screen", zIndex: 20 }}
+                style={{ mixBlendMode: "screen", zIndex: 20, transform: "scaleX(-1)" }}
             />
         </>
     );
