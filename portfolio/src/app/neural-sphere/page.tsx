@@ -223,7 +223,7 @@ export default function NeuralSpherePage() {
                                 PHYSICS STATE
                             </div>
                             <div className="text-sm font-bold font-mono" style={{ color: "#00ff41" }}>
-                                {isGrabbing ? "Kavrama_Active" : gravityEnabled ? "Active_Gravity" : "Zero_Gravity"}
+                                {isGrabbing ? "Grip_Active" : gravityEnabled ? "Active_Gravity" : "Zero_Gravity"}
                             </div>
                         </div>
                     </div>
