@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Hand, Zap, Aperture, ArrowLeft, ToggleLeft, ToggleRight } from "lucide-react";
+import { Hand, Zap, Aperture, ArrowLeft, ToggleLeft, ToggleRight, ScanEye, ChevronLeft, ChevronRight } from "lucide-react";
 import PhysicsLab from "@/components/PhysicsLab";
-import HandTrackingBridge from "@/components/HandTrackingBridge";
+import HandTrackingBridge, { AVAILABLE_FILTERS } from "@/components/HandTrackingBridge";
 
 export default function NeuralSpherePage() {
     const [gravityEnabled, setGravityEnabled] = useState(false);
@@ -12,6 +12,9 @@ export default function NeuralSpherePage() {
     const [fps, setFps] = useState(0);
     const [handLandmarks, setHandLandmarks] = useState<{ x: number; y: number }[][]>([]);
     const [pinchStates, setPinchStates] = useState<boolean[]>([]);
+    const [filterMode, setFilterMode] = useState(false);
+    const [activeFilter, setActiveFilter] = useState("THERMAL_SCAN");
+    const [frameDetected, setFrameDetected] = useState(false);
 
     // ── Total Chatbot Nuke ──────────────────────────────────────────────────
     useEffect(() => {
@@ -124,6 +127,9 @@ export default function NeuralSpherePage() {
                 onFpsChange={setFps}
                 onHandLandmarksChange={setHandLandmarks}
                 onPinchStatesChange={setPinchStates}
+                filterMode={filterMode}
+                activeFilter={activeFilter}
+                onFrameDetectedChange={setFrameDetected}
             />
 
             {/* ═══ Glassmorphic Floating Island HUD (z-index: 50) ═══ */}
@@ -220,39 +226,107 @@ export default function NeuralSpherePage() {
                         <Aperture size={14} color="#00ff41" strokeWidth={2.5} />
                         <div>
                             <div className="text-[10px] tracking-[0.15em] font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>
-                                PHYSICS STATE
+                                {filterMode ? "LENS STATE" : "PHYSICS STATE"}
                             </div>
                             <div className="text-sm font-bold font-mono" style={{ color: "#00ff41" }}>
-                                {isGrabbing ? "Grip_Active" : gravityEnabled ? "Active_Gravity" : "Zero_Gravity"}
+                                {filterMode
+                                    ? frameDetected ? "Frame_Locked" : "Awaiting_Frame"
+                                    : isGrabbing ? "Grip_Active" : gravityEnabled ? "Active_Gravity" : "Zero_Gravity"}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* ─── Right: GRAVITY_OVERRIDE ─── */}
-                <button
-                    className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-mono text-sm transition-all duration-300 cursor-pointer"
-                    style={{
-                        background: "rgba(120, 53, 15, 0.15)",
-                        border: "1px solid rgba(251, 191, 36, 0.2)",
-                        color: "#fbbf24",
-                        boxShadow: "0 0 12px rgba(251, 191, 36, 0.1)",
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(120, 53, 15, 0.35)";
-                        e.currentTarget.style.borderColor = "rgba(251, 191, 36, 0.5)";
-                        e.currentTarget.style.boxShadow = "0 0 20px rgba(251, 191, 36, 0.25)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "rgba(120, 53, 15, 0.15)";
-                        e.currentTarget.style.borderColor = "rgba(251, 191, 36, 0.2)";
-                        e.currentTarget.style.boxShadow = "0 0 12px rgba(251, 191, 36, 0.1)";
-                    }}
-                    onClick={() => setGravityEnabled((prev) => !prev)}
-                >
-                    {gravityEnabled ? <ToggleRight size={15} /> : <ToggleLeft size={15} />}
-                    GRAVITY_OVERRIDE
-                </button>
+                {/* ─── Right: Action Buttons ─── */}
+                <div className="flex items-center gap-3">
+                    {/* REALITY_LENS toggle */}
+                    <div className="flex flex-col items-end gap-2">
+                        <button
+                            className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-mono text-sm transition-all duration-300 cursor-pointer"
+                            style={{
+                                background: filterMode ? "rgba(0, 80, 30, 0.35)" : "rgba(0, 60, 20, 0.15)",
+                                border: `1px solid ${filterMode ? "rgba(0, 255, 65, 0.5)" : "rgba(0, 255, 65, 0.2)"}`,
+                                color: "#00ff41",
+                                boxShadow: filterMode ? "0 0 20px rgba(0, 255, 65, 0.25)" : "0 0 12px rgba(0, 255, 65, 0.1)",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = "rgba(0, 80, 30, 0.35)";
+                                e.currentTarget.style.borderColor = "rgba(0, 255, 65, 0.5)";
+                                e.currentTarget.style.boxShadow = "0 0 20px rgba(0, 255, 65, 0.25)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = filterMode ? "rgba(0, 80, 30, 0.35)" : "rgba(0, 60, 20, 0.15)";
+                                e.currentTarget.style.borderColor = filterMode ? "rgba(0, 255, 65, 0.5)" : "rgba(0, 255, 65, 0.2)";
+                                e.currentTarget.style.boxShadow = filterMode ? "0 0 20px rgba(0, 255, 65, 0.25)" : "0 0 12px rgba(0, 255, 65, 0.1)";
+                            }}
+                            onClick={() => setFilterMode((prev) => !prev)}
+                        >
+                            <ScanEye size={15} />
+                            REALITY_LENS
+                        </button>
+
+                        {/* Filter selector (visible when filterMode is on) */}
+                        {filterMode && (
+                            <div
+                                className="flex items-center gap-1.5 px-2 py-1 rounded-lg"
+                                style={{
+                                    background: "rgba(0, 0, 0, 0.4)",
+                                    border: "1px solid rgba(0, 255, 65, 0.15)",
+                                }}
+                            >
+                                <button
+                                    className="p-0.5 rounded cursor-pointer transition-colors hover:bg-white/10"
+                                    onClick={() => {
+                                        const idx = AVAILABLE_FILTERS.indexOf(activeFilter);
+                                        setActiveFilter(AVAILABLE_FILTERS[(idx - 1 + AVAILABLE_FILTERS.length) % AVAILABLE_FILTERS.length]);
+                                    }}
+                                >
+                                    <ChevronLeft size={12} color="#00ff41" />
+                                </button>
+                                <span
+                                    className="font-mono text-[10px] tracking-wider min-w-[100px] text-center"
+                                    style={{ color: "#00ff41" }}
+                                >
+                                    {activeFilter}
+                                </span>
+                                <button
+                                    className="p-0.5 rounded cursor-pointer transition-colors hover:bg-white/10"
+                                    onClick={() => {
+                                        const idx = AVAILABLE_FILTERS.indexOf(activeFilter);
+                                        setActiveFilter(AVAILABLE_FILTERS[(idx + 1) % AVAILABLE_FILTERS.length]);
+                                    }}
+                                >
+                                    <ChevronRight size={12} color="#00ff41" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* GRAVITY_OVERRIDE */}
+                    <button
+                        className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-mono text-sm transition-all duration-300 cursor-pointer"
+                        style={{
+                            background: "rgba(120, 53, 15, 0.15)",
+                            border: "1px solid rgba(251, 191, 36, 0.2)",
+                            color: "#fbbf24",
+                            boxShadow: "0 0 12px rgba(251, 191, 36, 0.1)",
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(120, 53, 15, 0.35)";
+                            e.currentTarget.style.borderColor = "rgba(251, 191, 36, 0.5)";
+                            e.currentTarget.style.boxShadow = "0 0 20px rgba(251, 191, 36, 0.25)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "rgba(120, 53, 15, 0.15)";
+                            e.currentTarget.style.borderColor = "rgba(251, 191, 36, 0.2)";
+                            e.currentTarget.style.boxShadow = "0 0 12px rgba(251, 191, 36, 0.1)";
+                        }}
+                        onClick={() => setGravityEnabled((prev) => !prev)}
+                    >
+                        {gravityEnabled ? <ToggleRight size={15} /> : <ToggleLeft size={15} />}
+                        GRAVITY_OVERRIDE
+                    </button>
+                </div>
             </div>
 
             {/* ═══ Bottom Status Ticker ═══ */}
@@ -265,7 +339,7 @@ export default function NeuralSpherePage() {
                     border: "1px solid rgba(0, 255, 65, 0.08)",
                 }}
             >
-                NEURAL_SPHERE_ENGINE v2.0 • HAND_PHYSICS_ACTIVE • {handCount > 0 ? "TRACKING" : "STANDBY"}
+                NEURAL_SPHERE_ENGINE v2.0 • {filterMode ? `REALITY_LENS [${activeFilter}]` : "HAND_PHYSICS_ACTIVE"} • {handCount > 0 ? "TRACKING" : "STANDBY"}
             </div>
         </div>
     );
