@@ -36,6 +36,7 @@ export default function RootLayout({
 
           <LayoutClient />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
